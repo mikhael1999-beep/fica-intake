@@ -369,8 +369,19 @@ function setType(type, el) {
 
 function handleUpload(docId, input) {
   if (input.files && input.files[0]) {
-    state.uploads[docId] = input.files[0].name;
-    render();
+    var file = input.files[0];
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      // Store file name, type and base64 data
+      state.uploads[docId] = {
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        data: e.target.result.split(",")[1] // base64 only
+      };
+      render();
+    };
+    reader.readAsDataURL(file);
   }
 }
 
@@ -400,16 +411,24 @@ function submitForm() {
   if (btn) { btn.disabled = true; btn.textContent = "Submitting..."; }
 
   const payload = {
-    action:          "submit_fica",
-    token:           state.token,
-    clientType:      state.clientType,
-    email:           state.fields["email"]      || "",
-    phone:           state.fields["phone"]      || "",
-    idNumber:        state.fields["idNumber"]   || state.fields["regNumber"] || "",
-    address:         state.fields["address"]    || state.fields["regAddress"] || "",
-    occupation:      state.fields["occupation"] || state.fields["repTitle"]   || "",
-    beneficialOwners:state.fields["bo"]         || "",
-    documents:       Object.values(state.uploads),
+    action:           "submit_fica",
+    token:            state.token,
+    clientType:       state.clientType,
+    firstName:        state.fields["firstName"]  || "",
+    lastName:         state.fields["lastName"]   || "",
+    entityName:       state.fields["entityName"] || "",
+    email:            state.fields["email"]      || "",
+    phone:            state.fields["phone"]      || "",
+    idNumber:         state.fields["idNumber"]   || state.fields["regNumber"] || "",
+    regNumber:        state.fields["regNumber"]  || "",
+    address:          state.fields["address"]    || state.fields["regAddress"] || "",
+    regAddress:       state.fields["regAddress"] || "",
+    occupation:       state.fields["occupation"] || state.fields["repTitle"]  || "",
+    repTitle:         state.fields["repTitle"]   || "",
+    beneficialOwners: state.fields["bo"]         || "",
+    documents:        Object.values(state.uploads).map(function(f) {
+      return { name: f.name, type: f.type, data: f.data };
+    }),
   };
 
   if (SCRIPT_URL === "PASTE_YOUR_WEB_APP_URL_HERE") {
@@ -650,7 +669,7 @@ function renderStep3() {
     const uploadedHtml = uploaded
       ? `<div class="upload-done">
            <span>&#10003;&nbsp;</span>
-           <span>${uploaded}</span>
+           <span>${uploaded.name}</span>
            <button class="upload-remove" onclick="removeUpload('${d.id}')">Remove</button>
          </div>`
       : `<div class="upload-zone">

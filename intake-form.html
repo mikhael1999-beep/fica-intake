@@ -426,6 +426,8 @@ function submitForm() {
     occupation:       state.fields["occupation"] || state.fields["repTitle"]  || "",
     repTitle:         state.fields["repTitle"]   || "",
     beneficialOwners: state.fields["bo"]         || "",
+    feeSignature:     state.fields["feeSignature"] || "",
+    feeSignedDate:    new Date().toLocaleDateString("en-ZA"),
     documents:        Object.values(state.uploads).map(function(f) {
       return { name: f.name, type: f.type, data: f.data };
     }),
@@ -462,9 +464,9 @@ function submitForm() {
 // ============================================================
 function render() {
   const app = document.getElementById("app");
-  const pct = (state.step / 4) * 100;
+  const pct = (state.step / 5) * 100;
 
-  const stepLabels = ["Client type", "Information", "Documents", "Confirm"];
+  const stepLabels = ["Client type", "Information", "Documents", "Fee agreement", "Confirm"];
   const stepsHtml  = stepLabels.map((label, i) => {
     const n   = i + 1;
     const cls = n < state.step ? "done" : n === state.step ? "active" : "";
@@ -480,6 +482,7 @@ function render() {
   else if (state.step === 2) content = renderStep2();
   else if (state.step === 3) content = renderStep3();
   else if (state.step === 4) content = renderStep4();
+  else if (state.step === 5) content = renderStep5();
 
   app.innerHTML = `
     <div class="header">
@@ -705,9 +708,71 @@ function renderStep3() {
 }
 
 // ============================================================
-//  STEP 4 — Review and confirm
+//  STEP 4 — Fee agreement
 // ============================================================
 function renderStep4() {
+  const signed = state.fields["feeSignature"] && state.fields["feeSignature"].trim().length > 2;
+  return `
+    <div class="notice">&#8505;&nbsp; Please read the fee agreement carefully before signing. Your typed full name below constitutes a valid electronic signature in terms of the Electronic Communications and Transactions Act.</div>
+    <div class="card">
+      <div class="card-title">Fee Agreement — Albert Hibbert Inc Attorneys</div>
+      <div style="background:#F5F4F0;border-radius:8px;padding:1rem;margin-bottom:1rem;max-height:320px;overflow-y:auto;font-size:12px;line-height:1.7;color:#444;">
+        <strong>1. RESPONSIBILITY</strong><br>
+        In this matter, Albert Hibbert will bear overall responsibility. Please contact Albert at any time should you have any queries. His contact number is 012 346 4633.<br><br>
+        <strong>2. FEES AND BILLING</strong><br>
+        Our fees are calculated on an hourly basis. The approximate hourly rates are:<br><br>
+        <table style="width:100%;font-size:11px;border-collapse:collapse;">
+          <tr style="background:#1a1a18;color:#fff;"><td style="padding:5px;font-weight:500;">Professional</td><td style="padding:5px;text-align:center;">Standard Rate</td><td style="padding:5px;text-align:center;">High Rate</td></tr>
+          <tr style="background:#fff;"><td style="padding:5px;border-bottom:0.5px solid #e0dfd8;">Albert Hibbert</td><td style="padding:5px;text-align:center;border-bottom:0.5px solid #e0dfd8;">R4 400.00/hr</td><td style="padding:5px;text-align:center;border-bottom:0.5px solid #e0dfd8;">R5 000.00/hr</td></tr>
+          <tr style="background:#F5F4F0;"><td style="padding:5px;border-bottom:0.5px solid #e0dfd8;">Jaco du Plooy</td><td style="padding:5px;text-align:center;border-bottom:0.5px solid #e0dfd8;">R3 300.00/hr</td><td style="padding:5px;text-align:center;border-bottom:0.5px solid #e0dfd8;">R3 600.00/hr</td></tr>
+          <tr style="background:#fff;"><td style="padding:5px;border-bottom:0.5px solid #e0dfd8;">Mikhael Venter</td><td style="padding:5px;text-align:center;border-bottom:0.5px solid #e0dfd8;">R2 300.00/hr</td><td style="padding:5px;text-align:center;border-bottom:0.5px solid #e0dfd8;">R2 600.00/hr</td></tr>
+          <tr style="background:#F5F4F0;"><td style="padding:5px;border-bottom:0.5px solid #e0dfd8;">2nd Year Candidate</td><td style="padding:5px;text-align:center;border-bottom:0.5px solid #e0dfd8;">R1 600.00/hr</td><td style="padding:5px;text-align:center;border-bottom:0.5px solid #e0dfd8;">R1 800.00/hr</td></tr>
+          <tr style="background:#fff;"><td style="padding:5px;">1st Year Candidate</td><td style="padding:5px;text-align:center;">R1 300.00/hr</td><td style="padding:5px;text-align:center;">R1 500.00/hr</td></tr>
+        </table><br>
+        We charge the high rate for work requiring excessive overtime or urgent work. Disbursements including telephone calls, copying, counsel fees, and out-of-pocket costs are charged separately. VAT at 15% applies to all invoices. Invoices are payable within 7 days of receipt.<br><br>
+        <strong>3. ADJUSTMENT OF RATES</strong><br>
+        Rates are reviewed annually and may be changed without prior notice.<br><br>
+        <strong>4. COMMUNICATION</strong><br>
+        Correspondence will be transmitted by fax or email. We cannot accept responsibility for breaches of confidentiality arising from use of these media.<br><br>
+        <strong>5. GOVERNING LAW</strong><br>
+        Our contractual relationship will be governed by the laws of the Republic of South Africa.<br><br>
+        <strong>6. CONFIDENTIALITY</strong><br>
+        The contents of this agreement are confidential and may not be disclosed to any person other than yourselves.<br><br>
+        <strong>7. TERMINATION OF MANDATE</strong><br>
+        You are entitled to terminate our mandate at any time by written notice. We reserve the right to terminate our mandate should a conflict of interest arise, payment not be made, or should we be unable to obtain proper instructions.<br><br>
+        <strong>8. LIMITATION OF LIABILITY</strong><br>
+        Any liability we may incur shall be limited in aggregate to R 2 000 000.00.<br><br>
+        <strong>9. FICA INFORMATION</strong><br>
+        In terms of the Financial Intelligence Centre Act of 2001, we are obliged to maintain certain general records in respect of our clients.<br><br>
+        <strong>10. ACCEPTANCE</strong><br>
+        By signing below you confirm acceptance of these terms and authorise Albert Hibbert Inc Attorneys to act on your behalf.
+      </div>
+      <div style="display:flex;justify-content:center;margin-bottom:1rem;">
+        <a href="https://mikhael1999-beep.github.io/fica-intake/fee-agreement.pdf" target="_blank"
+          style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;border:0.5px solid #ccc;background:#fff;color:#1a1a18;font-size:12px;font-weight:500;text-decoration:none;">
+          &#128196;&nbsp; Download full fee agreement PDF
+        </a>
+      </div>
+      <div class="field">
+        <label class="field-label">Electronic signature — type your full name to sign <span class="required">*</span></label>
+        <input type="text" id="fee-sig"
+          placeholder="Type your full name exactly as it appears on your ID"
+          value="${state.fields['feeSignature']||''}"
+          onchange="saveField('feeSignature',this.value);document.getElementById('fee-sig-date').textContent=new Date().toLocaleDateString('en-ZA',{day:'numeric',month:'long',year:'numeric'});"
+          style="font-style:italic;font-size:15px;" />
+        <div class="field-hint">Signed electronically on <span id="fee-sig-date">${new Date().toLocaleDateString('en-ZA',{day:'numeric',month:'long',year:'numeric'})}</span> in terms of the Electronic Communications and Transactions Act 25 of 2002</div>
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="btn" onclick="goTo(3)">&larr; Back</button>
+      <button class="btn btn-primary" onclick="goTo(5)" ${signed?'':'disabled'}>Continue &rarr;</button>
+    </div>`;
+}
+
+// ============================================================
+//  STEP 5 — Review and confirm
+// ============================================================
+function renderStep5() {
   const f   = state.fields;
   const isE = state.clientType !== "individual";
   const name  = isE
@@ -753,7 +818,7 @@ function renderStep4() {
       </div>
     </div>
     <div class="nav-row">
-      <button class="btn" onclick="goTo(3)">&larr; Back</button>
+      <button class="btn" onclick="goTo(4)">&larr; Back</button>
       <button class="btn btn-primary" id="submit-btn"
         onclick="submitForm()" ${state.declared?'':'disabled'}>
         &#10003;&nbsp; Submit FICA application

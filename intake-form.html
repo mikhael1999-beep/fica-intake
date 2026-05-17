@@ -1,797 +1,427 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FICA Onboarding — Albert Hibbert Attorneys Inc.</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #F5F4F0;
-      color: #1a1a18;
-      min-height: 100vh;
-      padding: 2rem 1rem 4rem;
-    }
-
-    .page { max-width: 620px; margin: 0 auto; }
-
-    /* Header */
-    .header {
-      text-align: center;
-      padding: 2rem 1rem 1.5rem;
-      background: #fff;
-      border-radius: 12px;
-      border: 0.5px solid #e0dfd8;
-      margin-bottom: 1.25rem;
-    }
-    .firm-name { font-size: 12px; font-weight: 500; color: #888; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px; }
-    .form-title { font-size: 22px; font-weight: 500; color: #1a1a18; margin-bottom: 6px; }
-    .form-sub { font-size: 14px; color: #666; line-height: 1.6; }
-    .form-ref {
-      display: inline-flex; align-items: center; gap: 6px;
-      margin-top: 12px; background: #F5F4F0;
-      border: 0.5px solid #e0dfd8; border-radius: 6px;
-      padding: 5px 12px; font-size: 12px; color: #888;
-    }
-
-    /* Progress */
-    .progress-wrap { margin-bottom: 1.25rem; }
-    .progress-bar { height: 3px; background: #e0dfd8; border-radius: 2px; overflow: hidden; }
-    .progress-fill { height: 100%; background: #1a1a18; border-radius: 2px; transition: width 0.3s ease; }
-
-    /* Steps indicator */
-    .steps {
-      display: flex; align-items: flex-start;
-      justify-content: center; gap: 0;
-      margin-bottom: 1.5rem;
-    }
-    .step-item { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; position: relative; }
-    .step-item:not(:last-child)::after {
-      content: ''; position: absolute; top: 12px; left: 50%;
-      width: 100%; height: 0.5px; background: #e0dfd8; z-index: 0;
-    }
-    .step-dot {
-      width: 24px; height: 24px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 500;
-      border: 0.5px solid #ccc; background: #fff;
-      color: #aaa; z-index: 1; position: relative;
-      transition: all 0.2s;
-    }
-    .step-dot.active { background: #1a1a18; color: #fff; border-color: #1a1a18; }
-    .step-dot.done { background: #EAF3DE; color: #3B6D11; border-color: #97C459; font-size: 13px; }
-    .step-label { font-size: 10px; color: #aaa; white-space: nowrap; }
-    .step-label.active { color: #1a1a18; font-weight: 500; }
-
-    /* Card */
-    .card {
-      background: #fff; border-radius: 12px;
-      border: 0.5px solid #e0dfd8; padding: 1.5rem;
-      margin-bottom: 1rem;
-    }
-    .card-title {
-      font-size: 14px; font-weight: 500; color: #1a1a18;
-      margin-bottom: 1.25rem; display: flex; align-items: center; gap: 8px;
-    }
-    .card-title svg { width: 18px; height: 18px; color: #aaa; flex-shrink: 0; }
-
-    /* Fields */
-    .field { margin-bottom: 1rem; }
-    .field:last-child { margin-bottom: 0; }
-    .field-label {
-      display: block; font-size: 12px; font-weight: 500;
-      color: #555; margin-bottom: 5px;
-    }
-    .required { color: #A32D2D; }
-    .field-hint { font-size: 11px; color: #aaa; margin-top: 4px; }
-    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-    input[type="text"], input[type="email"], input[type="tel"],
-    input[type="date"], select, textarea {
-      width: 100%; padding: 9px 12px;
-      border-radius: 8px; border: 0.5px solid #ccc;
-      background: #fff; color: #1a1a18;
-      font-size: 14px; font-family: inherit;
-      outline: none; transition: border-color 0.15s;
-      appearance: none;
-    }
-    input:focus, select:focus, textarea:focus { border-color: #888; }
-    input::placeholder, textarea::placeholder { color: #bbb; }
-    textarea { resize: vertical; }
-
-    /* Radio options */
-    .radio-group { display: flex; flex-direction: column; gap: 8px; }
-    .radio-option {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 10px 12px; border-radius: 8px;
-      border: 0.5px solid #e0dfd8; cursor: pointer;
-      transition: all 0.1s;
-    }
-    .radio-option:hover { background: #F5F4F0; }
-    .radio-option.selected { border-color: #888; background: #F5F4F0; }
-    .radio-circle {
-      width: 16px; height: 16px; border-radius: 50%;
-      border: 0.5px solid #ccc; flex-shrink: 0;
-      margin-top: 2px; display: flex; align-items: center;
-      justify-content: center; transition: all 0.1s;
-    }
-    .radio-option.selected .radio-circle { border-color: #1a1a18; background: #1a1a18; }
-    .radio-inner { width: 6px; height: 6px; border-radius: 50%; background: #fff; }
-    .radio-text { font-size: 14px; color: #1a1a18; font-weight: 500; }
-    .radio-sub { font-size: 12px; color: #888; margin-top: 2px; }
-
-    /* Upload zone */
-    .upload-zone {
-      border: 0.5px dashed #ccc; border-radius: 8px;
-      padding: 1.25rem; text-align: center; cursor: pointer;
-      transition: background 0.15s; background: #F5F4F0;
-      position: relative;
-    }
-    .upload-zone:hover { background: #eeeee8; }
-    .upload-zone input[type="file"] {
-      position: absolute; inset: 0; opacity: 0;
-      cursor: pointer; width: 100%; height: 100%;
-    }
-    .upload-icon { font-size: 22px; margin-bottom: 6px; color: #aaa; }
-    .upload-label { font-size: 13px; font-weight: 500; color: #1a1a18; }
-    .upload-sub { font-size: 11px; color: #aaa; margin-top: 3px; }
-
-    .upload-done {
-      display: flex; align-items: center; gap: 8px;
-      padding: 9px 12px; border-radius: 8px;
-      border: 0.5px solid #97C459; background: #EAF3DE;
-      font-size: 12px; color: #3B6D11; margin-top: 6px;
-    }
-    .upload-remove {
-      margin-left: auto; background: none; border: none;
-      cursor: pointer; font-size: 12px; color: #3B6D11;
-      font-family: inherit; padding: 0;
-    }
-
-    /* Notice */
-    .notice {
-      background: #E6F1FB; border: 0.5px solid #85B7EB;
-      border-radius: 8px; padding: 10px 14px;
-      font-size: 12px; color: #0C447C;
-      display: flex; gap: 8px; align-items: flex-start;
-      margin-bottom: 1rem;
-    }
-
-    /* Divider */
-    .divider { height: 0.5px; background: #e0dfd8; margin: 1.25rem 0; }
-
-    /* Section subtitle */
-    .section-sub {
-      font-size: 13px; font-weight: 500; color: #1a1a18;
-      margin-bottom: 1rem; margin-top: 0.25rem;
-      display: flex; align-items: center; gap: 8px;
-    }
-
-    /* Nav */
-    .nav-row {
-      display: flex; align-items: center;
-      justify-content: space-between;
-      margin-top: 1.5rem; padding-top: 1.25rem;
-      border-top: 0.5px solid #e0dfd8;
-    }
-
-    /* Buttons */
-    .btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 10px 20px; font-size: 14px; border-radius: 8px;
-      border: 0.5px solid #ccc; background: #fff; color: #1a1a18;
-      cursor: pointer; font-family: inherit; transition: background 0.1s;
-      font-weight: 500;
-    }
-    .btn:hover { background: #F5F4F0; }
-    .btn-primary {
-      background: #1a1a18; color: #fff; border-color: #1a1a18;
-    }
-    .btn-primary:hover { opacity: 0.88; background: #1a1a18; }
-    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    /* Declaration checkbox */
-    .decl-box {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 12px; border-radius: 8px;
-      border: 0.5px solid #e0dfd8; cursor: pointer;
-      transition: all 0.1s;
-    }
-    .decl-box.checked { border-color: #888; background: #F5F4F0; }
-    .checkbox {
-      width: 16px; height: 16px; border-radius: 4px;
-      border: 0.5px solid #ccc; background: #fff;
-      flex-shrink: 0; margin-top: 2px; display: flex;
-      align-items: center; justify-content: center;
-      transition: all 0.1s;
-    }
-    .decl-box.checked .checkbox { background: #1a1a18; border-color: #1a1a18; }
-    .checkmark { color: #fff; font-size: 11px; }
-
-    /* Summary table */
-    .summary-table { width: 100%; font-size: 13px; }
-    .summary-table td { padding: 6px 0; border-bottom: 0.5px solid #e0dfd8; }
-    .summary-table tr:last-child td { border-bottom: none; }
-    .summary-label { color: #888; width: 45%; }
-    .summary-value { font-weight: 500; color: #1a1a18; text-align: right; }
-
-    /* Success screen */
-    .success { text-align: center; padding: 3rem 1rem; }
-    .success-icon {
-      width: 60px; height: 60px; border-radius: 50%;
-      background: #EAF3DE; display: flex; align-items: center;
-      justify-content: center; margin: 0 auto 1.5rem; font-size: 28px;
-    }
-    .success-title { font-size: 20px; font-weight: 500; margin-bottom: 8px; }
-    .success-sub { font-size: 14px; color: #666; line-height: 1.7; max-width: 380px; margin: 0 auto 2rem; }
-    .ref-box {
-      background: #F5F4F0; border-radius: 8px; padding: 1rem;
-      display: inline-block; text-align: left; min-width: 280px;
-    }
-    .ref-box-title { font-size: 11px; font-weight: 500; color: #aaa; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px; }
-    .ref-row { display: flex; justify-content: space-between; gap: 24px; font-size: 13px; padding: 4px 0; }
-    .ref-key { color: #888; }
-    .ref-val { font-weight: 500; }
-
-    /* Error state */
-    .error-msg { font-size: 11px; color: #A32D2D; margin-top: 4px; display: none; }
-    .field-error input, .field-error select, .field-error textarea { border-color: #E24B4A; }
-    .field-error .error-msg { display: block; }
-
-    /* Expired/invalid screen */
-    .invalid { text-align: center; padding: 3rem 1rem; }
-    .invalid-icon { font-size: 40px; margin-bottom: 1rem; }
-    .invalid-title { font-size: 18px; font-weight: 500; margin-bottom: 8px; }
-    .invalid-sub { font-size: 14px; color: #666; line-height: 1.6; }
-
-    @media (max-width: 480px) {
-      .field-row { grid-template-columns: 1fr; }
-      body { padding: 1rem 0.75rem 3rem; }
-    }
-  </style>
-</head>
-<body>
-<div class="page" id="app">
-  <!-- Rendered by JavaScript below -->
-</div>
-
-<script>
 // ============================================================
-//  CONFIGURATION
-//  Replace the URL below with your deployed Apps Script URL
-//  from Step 5 of the setup guide.
+//  ALBERT HIBBERT ATTORNEYS - FICA INTAKE CONNECTION LAYER
+//  Google Apps Script . Paste this into script.google.com
+//  Version 1.0 . May 2026
 // ============================================================
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzpNaSTwyCNDoiv_X9o3cCoftzxi6VGPoWS35WNWwxUishd__fJHglH9ILn4OzjgJNv/exec";
 
-// ============================================================
-//  STATE
-// ============================================================
-let state = {
-  step: 1,
-  clientType: "individual",
-  token: null,
-  clientName: "",
-  ref: "",
-  declared: false,
-  uploads: {},
-  fields: {}
+// -- CONFIGURATION -------------------------------------------
+// After pasting this script, update the values below once.
+
+const CONFIG = {
+  SHEET_NAME:        "FICA Clients",          // Name of your Google Sheet tab
+  NOTIFY_EMAIL:      "aha3@hibbertlaw.co.za", // Your email for notifications
+  NOTIFY_NAME:       "Mikhael Venter",          // Your name
+  FIRM_NAME:         "Albert Hibbert Attorneys Inc.",
+  DRIVE_FOLDER_NAME: "FICA Client Documents",   // Google Drive folder name
+  LINK_EXPIRY_HOURS: 72,                         // How long intake links stay active
+  WHATSAPP_ENABLED:  false,                      // Set true when Phase 2 is ready
 };
 
-// ============================================================
-//  INIT — read token from URL on page load
-// ============================================================
-window.addEventListener("DOMContentLoaded", function () {
+// -- SHEET COLUMNS --------------------------------------------
+// These are the column headers created automatically on first run.
+const COLUMNS = [
+  "Timestamp",
+  "Reference",
+  "Client Name",
+  "Client Type",
+  "Email",
+  "Phone",
+  "ID / Reg Number",
+  "Address",
+  "Occupation / Representative",
+  "Beneficial Owners",
+  "Documents Uploaded",
+  "Document Folder Link",
+  "Status",
+  "Verified By",
+  "Verified Date",
+  "Notes",
+  "Link Token",
+  "Link Expiry",
+  "Link Used",
+];
 
-  // Robust token reading — works from local files and hosted URLs
-  var token = null;
+// ============================================================
+//  1. SETUP - Run this once to initialise the spreadsheet
+// ============================================================
+function setupSheet() {
+  const ss   = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet  = ss.getSheetByName(CONFIG.SHEET_NAME);
 
-  // Method 1: standard URLSearchParams
+  if (!sheet) {
+    sheet = ss.insertSheet(CONFIG.SHEET_NAME);
+  }
+
+  // Write headers if the sheet is empty
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(COLUMNS);
+    sheet.getRange(1, 1, 1, COLUMNS.length)
+      .setFontWeight("bold")
+      .setBackground("#F1EFE8");
+    sheet.setFrozenRows(1);
+    sheet.setColumnWidth(1, 160);
+    sheet.setColumnWidth(3, 200);
+    sheet.setColumnWidth(5, 200);
+    sheet.setColumnWidth(12, 260);
+  }
+
+  // Ensure the Drive folder exists
+  getOrCreateFolder(CONFIG.DRIVE_FOLDER_NAME);
+
+  Logger.log("Setup complete. Sheet and Drive folder are ready.");
+  SpreadsheetApp.getUi().alert(
+    "Setup complete!\n\nSheet '" + CONFIG.SHEET_NAME +
+    "' is ready and your Drive folder '" + CONFIG.DRIVE_FOLDER_NAME +
+    "' has been created.\n\nNext step: deploy this script as a Web App."
+  );
+}
+
+// ============================================================
+//  2. WEB APP ENTRY POINT - handles form submissions (POST)
+//     and link validation (GET)
+// ============================================================
+function doGet(e) {
+  const token = e.parameter.token;
+  if (!token) return jsonResponse({ valid: false, reason: "No token supplied" });
+
+  const result = validateToken(token);
+  return jsonResponse(result);
+}
+
+function doPost(e) {
   try {
-    var params = new URLSearchParams(window.location.search);
-    token = params.get("token");
-  } catch(e) {}
-
-  // Method 2: manual parse of href (fallback for local file edge cases)
-  if (!token) {
-    var href = window.location.href;
-    var match = href.match(/[?&]token=([^&]+)/);
-    if (match) token = decodeURIComponent(match[1]);
+    var data;
+    if (e.parameter && e.parameter.payload) {
+      data = JSON.parse(e.parameter.payload);
+    } else if (e.postData && e.postData.contents) {
+      data = JSON.parse(e.postData.contents);
+    }
+    if (!data) return jsonResponse({ success: false, error: "No data received" });
+    var action = data.action;
+    if (action === "generate_link") return jsonResponse(generateClientLink(data));
+    if (action === "submit_fica")   return jsonResponse(handleFicaSubmission(data));
+    if (action === "activate")      return jsonResponse(activateClient(data));
+    return jsonResponse({ success: false, error: "Unknown action" });
+  } catch (err) {
+    return jsonResponse({ success: false, error: err.message });
   }
-
-  // Method 3: check hash fragment (some QR code generators use #token=...)
-  if (!token) {
-    var hash = window.location.hash;
-    var hashMatch = hash.match(/token=([^&]+)/);
-    if (hashMatch) token = decodeURIComponent(hashMatch[1]);
-  }
-
-  // If still no token, show invalid screen
-  if (!token) {
-    renderInvalid("No access token found. Please use the link provided by Albert Hibbert Attorneys.");
-    return;
-  }
-
-  state.token = token;
-
-  // If Apps Script URL is configured, validate the token
-  // Otherwise render form directly (testing / demo mode)
-  if (SCRIPT_URL !== "PASTE_YOUR_WEB_APP_URL_HERE") {
-    validateToken(token);
-  } else {
-    render();
-  }
-});
+}
 
 // ============================================================
-//  TOKEN VALIDATION (used in production)
+//  3. GENERATE INTAKE LINK - called from your dashboard
+//     when you click "Generate link" for a new client
 // ============================================================
+function generateClientLink(data) {
+  const sheet    = getSheet();
+  const token    = generateToken();
+  const expiry   = new Date();
+  expiry.setHours(expiry.getHours() + CONFIG.LINK_EXPIRY_HOURS);
+
+  const ref      = data.ref || generateRef();
+  const row      = [
+    new Date(),          // Timestamp
+    ref,                 // Reference
+    data.clientName,     // Client Name
+    data.clientType,     // Client Type
+    data.email,          // Email
+    String(data.phone || ""),  // Phone
+    "",                  // ID / Reg Number (filled on submission)
+    "",                  // Address
+    "",                  // Occupation
+    "",                  // Beneficial Owners
+    "",                  // Documents Uploaded
+    "",                  // Document Folder Link
+    "Link Sent",         // Status
+    "",                  // Verified By
+    "",                  // Verified Date
+    "",                  // Notes
+    token,               // Link Token
+    expiry.toISOString(),// Link Expiry
+    "false",             // Link Used
+  ];
+
+  sheet.appendRow(row);
+
+  // Build the intake URL - points to the hosted intake form on GitHub
+  const intakeUrl = "https://mikhael1999-beep.github.io/fica-intake/intake-form.html?token=" + token;
+
+  // Send the link to the client by email
+  sendLinkEmail(data.email, data.clientName, intakeUrl, ref, expiry);
+
+  Logger.log("Link generated for " + data.clientName + " - " + ref);
+  return { success: true, ref, token, intakeUrl, expiry: expiry.toISOString() };
+}
+
+// ============================================================
+//  4. HANDLE FICA SUBMISSION - fires when client submits
+//     their intake form
+// ============================================================
+function handleFicaSubmission(data) {
+  const sheet = getSheet();
+  const token = data.token || "";
+
+  // Walk-in / reception mode — token starts with WALK_IN_
+  const isWalkIn = token.indexOf("WALK_IN_") === 0;
+
+  if (isWalkIn) {
+    // Create a new record directly from submitted data
+    const ref = generateRef();
+    const clientName = data.entityName || (data.firstName + " " + data.lastName).trim() || "Walk-in Client";
+    const row = [
+      new Date(), ref, clientName, data.clientType || "Individual",
+      data.email || "", data.phone || "", data.idNumber || data.regNumber || "",
+      data.address || data.regAddress || "", data.occupation || data.repTitle || "",
+      data.beneficialOwners || "", (data.documents || []).join(", "), "",
+      "Pending Review", "", "", "", token, "", "true"
+    ];
+    sheet.appendRow(row);
+    const rowIndex = sheet.getLastRow();
+    sheet.getRange(rowIndex, 1, 1, COLUMNS.length).setBackground("#FAEEDA");
+    const parentFolder = getOrCreateFolder(CONFIG.DRIVE_FOLDER_NAME);
+    const clientFolder = parentFolder.createFolder(ref + " - " + clientName);
+    const folderUrl = clientFolder.getUrl();
+    const colMap = {};
+    COLUMNS.forEach((c, i) => colMap[c] = i + 1);
+    sheet.getRange(rowIndex, colMap["Document Folder Link"]).setValue(folderUrl);
+    sendSubmissionNotification(clientName, ref, data, folderUrl);
+    return { success: true, ref, folderUrl };
+  }
+
+  // Find the row for this token
+  const rowIndex = findRowByToken(token);
+  if (rowIndex === -1) return { success: false, error: "Invalid or expired token" };
+
+  const row = sheet.getRange(rowIndex, 1, 1, COLUMNS.length).getValues()[0];
+
+  // Check expiry
+  const expiry = new Date(row[COLUMNS.indexOf("Link Expiry")]);
+  if (new Date() > expiry) return { success: false, error: "This link has expired" };
+
+  // Check if already used
+  if (row[COLUMNS.indexOf("Link Used")] === "true") {
+    return { success: false, error: "This link has already been used" };
+  }
+
+  // Create a client folder in Google Drive
+  const clientName   = row[COLUMNS.indexOf("Client Name")];
+  const ref          = row[COLUMNS.indexOf("Reference")];
+  const folderName   = ref + " - " + clientName;
+  const parentFolder = getOrCreateFolder(CONFIG.DRIVE_FOLDER_NAME);
+  const clientFolder = parentFolder.createFolder(folderName);
+  const folderUrl    = clientFolder.getUrl();
+
+  // Update the sheet row with submitted data
+  const colMap = {};
+  COLUMNS.forEach((c, i) => colMap[c] = i + 1);
+
+  sheet.getRange(rowIndex, colMap["ID / Reg Number"]).setValue(data.idNumber     || "");
+  sheet.getRange(rowIndex, colMap["Address"])        .setValue(data.address      || "");
+  sheet.getRange(rowIndex, colMap["Occupation / Representative"]).setValue(data.occupation || "");
+  sheet.getRange(rowIndex, colMap["Beneficial Owners"]).setValue(data.beneficialOwners || "");
+  sheet.getRange(rowIndex, colMap["Documents Uploaded"]).setValue(
+    (data.documents || []).join(", ")
+  );
+  sheet.getRange(rowIndex, colMap["Document Folder Link"]).setValue(folderUrl);
+  sheet.getRange(rowIndex, colMap["Status"])         .setValue("Pending Review");
+  sheet.getRange(rowIndex, colMap["Link Used"])      .setValue("true");
+
+  // Colour-code the row as pending
+  sheet.getRange(rowIndex, 1, 1, COLUMNS.length).setBackground("#FAEEDA");
+
+  // Notify the attorney
+  sendSubmissionNotification(clientName, ref, data, folderUrl);
+
+  Logger.log("FICA submission received: " + ref + " - " + clientName);
+  return { success: true, ref, folderUrl };
+}
+
+// ============================================================
+//  5. ACTIVATE CLIENT - called from your dashboard when you
+//     click "Activate client" after manual verification
+// ============================================================
+function activateClient(data) {
+  const sheet    = getSheet();
+  const rowIndex = findRowByRef(data.ref);
+  if (rowIndex === -1) return { success: false, error: "Reference not found" };
+
+  const colMap = {};
+  COLUMNS.forEach((c, i) => colMap[c] = i + 1);
+
+  sheet.getRange(rowIndex, colMap["Status"])       .setValue("Active");
+  sheet.getRange(rowIndex, colMap["Verified By"])  .setValue(data.verifiedBy || CONFIG.NOTIFY_NAME);
+  sheet.getRange(rowIndex, colMap["Verified Date"]).setValue(new Date().toLocaleDateString("en-ZA"));
+  if (data.notes) {
+    sheet.getRange(rowIndex, colMap["Notes"]).setValue(data.notes);
+  }
+
+  // Colour-code as active
+  sheet.getRange(rowIndex, 1, 1, COLUMNS.length).setBackground("#EAF3DE");
+
+  // Send activation confirmation to client
+  const email = sheet.getRange(rowIndex, colMap["Email"]).getValue();
+  const name  = sheet.getRange(rowIndex, colMap["Client Name"]).getValue();
+  sendActivationEmail(email, name, data.ref);
+
+  Logger.log("Client activated: " + data.ref);
+  return { success: true };
+}
+
+// ============================================================
+//  6. EMAIL TEMPLATES
+// ============================================================
+function sendLinkEmail(email, name, url, ref, expiry) {
+  const expiryStr = expiry.toLocaleDateString("en-ZA", {
+    day: "numeric", month: "long", year: "numeric",
+    hour: "2-digit", minute: "2-digit"
+  });
+  const subject = CONFIG.FIRM_NAME + " - FICA onboarding . " + ref;
+  const body    = `Dear ${name},\n\n` +
+    `${CONFIG.FIRM_NAME} requires that all clients complete a FICA (Financial Intelligence Centre Act) onboarding process before we may act on your behalf.\n\n` +
+    `Please complete your FICA application using the secure link below:\n\n` +
+    `  ${url}\n\n` +
+    `This link is unique to you and will expire on ${expiryStr}. It may only be used once.\n\n` +
+    `You will need to have the following ready:\n` +
+    `  . A certified copy of your identity document or company registration certificate\n` +
+    `  . Proof of address not older than 3 months\n` +
+    `  . Any other supporting documents applicable to your client type\n\n` +
+    `Should you experience any difficulty, please contact our offices.\n\n` +
+    `Kind regards,\n${CONFIG.NOTIFY_NAME}\n${CONFIG.FIRM_NAME}`;
+
+  GmailApp.sendEmail(email, subject, body);
+  Logger.log("Intake link email sent to " + email);
+}
+
+function sendSubmissionNotification(clientName, ref, data, folderUrl) {
+  const subject = "FICA submission received - " + ref + " - " + clientName;
+  const body    =
+    `A new FICA submission has been received and is awaiting your review.\n\n` +
+    `Client:    ${clientName}\n` +
+    `Reference: ${ref}\n` +
+    `Type:      ${data.clientType || "-"}\n` +
+    `Email:     ${data.email || "-"}\n` +
+    `Phone:     ${data.phone || "-"}\n\n` +
+    `Documents have been placed in the client's Drive folder:\n${folderUrl}\n\n` +
+    `Log in to the FICA dashboard to review and activate this client.\n\n` +
+    `Kind regards,\n${CONFIG.FIRM_NAME} FICA System`;
+
+  GmailApp.sendEmail(CONFIG.NOTIFY_EMAIL, subject, body);
+}
+
+function sendActivationEmail(email, name, ref) {
+  const subject = CONFIG.FIRM_NAME + " - FICA approved . " + ref;
+  const body    =
+    `Dear ${name},\n\n` +
+    `We are pleased to confirm that your FICA application (reference ${ref}) has been ` +
+    `reviewed and approved. Your client status is now ACTIVE.\n\n` +
+    `${CONFIG.FIRM_NAME} is now able to act on your behalf in terms of the relevant mandate.\n\n` +
+    `Should you have any queries, please do not hesitate to contact our offices.\n\n` +
+    `Kind regards,\n${CONFIG.NOTIFY_NAME}\n${CONFIG.FIRM_NAME}`;
+
+  GmailApp.sendEmail(email, subject, body);
+  Logger.log("Activation email sent to " + email);
+}
+
+// ============================================================
+//  7. UTILITY FUNCTIONS
+// ============================================================
+function getSheet() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  return ss.getSheetByName(CONFIG.SHEET_NAME);
+}
+
+function getOrCreateFolder(name) {
+  const folders = DriveApp.getFoldersByName(name);
+  if (folders.hasNext()) return folders.next();
+  return DriveApp.createFolder(name);
+}
+
+function generateToken() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let token   = "";
+  for (let i = 0; i < 32; i++) {
+    token += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return token;
+}
+
+function generateRef() {
+  const year  = new Date().getFullYear();
+  const num   = String(Math.floor(Math.random() * 900) + 100);
+  return "AH/" + year + "/" + num;
+}
+
+function findRowByToken(token) {
+  const sheet = getSheet();
+  if (!sheet || sheet.getLastRow() < 2) return -1;
+  const col  = COLUMNS.indexOf("Link Token") + 1;
+  const data = sheet.getRange(2, col, sheet.getLastRow() - 1, 1).getValues();
+  for (let i = 0; i < data.length; i++) {
+    if (data[i][0] === token) return i + 2;
+  }
+  return -1;
+}
+
+function findRowByRef(ref) {
+  const sheet = getSheet();
+  if (!sheet || sheet.getLastRow() < 2) return -1;
+  const col  = COLUMNS.indexOf("Reference") + 1;
+  const data = sheet.getRange(2, col, sheet.getLastRow() - 1, 1).getValues();
+  for (let i = 0; i < data.length; i++) {
+    if (data[i][0] === ref) return i + 2;
+  }
+  return -1;
+}
+
 function validateToken(token) {
-  fetch(SCRIPT_URL + "?token=" + token)
-    .then(r => r.json())
-    .then(data => {
-      if (!data.valid) {
-        renderInvalid(data.reason || "This link is no longer valid.");
-        return;
-      }
-      state.clientName = data.clientName || "";
-      state.ref        = data.ref        || "";
-      state.clientType = (data.clientType || "individual").toLowerCase();
-      render();
-    })
-    .catch(() => {
-      // If fetch fails (e.g. SCRIPT_URL not set yet), render form anyway
-      render();
-    });
+  const rowIndex = findRowByToken(token);
+  if (rowIndex === -1) return { valid: false, reason: "Token not found" };
+
+  const sheet   = getSheet();
+  const colMap  = {};
+  COLUMNS.forEach((c, i) => colMap[c] = i + 1);
+
+  const expiry  = new Date(sheet.getRange(rowIndex, colMap["Link Expiry"]).getValue());
+  const used    = sheet.getRange(rowIndex, colMap["Link Used"]).getValue();
+  const name    = sheet.getRange(rowIndex, colMap["Client Name"]).getValue();
+  const ref     = sheet.getRange(rowIndex, colMap["Reference"]).getValue();
+  const type    = sheet.getRange(rowIndex, colMap["Client Type"]).getValue();
+
+  if (new Date() > expiry) return { valid: false, reason: "Link has expired" };
+  if (used === "true")     return { valid: false, reason: "Link already used" };
+
+  return { valid: true, clientName: name, ref, clientType: type };
+}
+
+function jsonResponse(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 // ============================================================
-//  NAVIGATION
+//  8. MANUAL HELPERS - run from the Apps Script editor
+//     when you need to do things manually
 // ============================================================
-function goTo(step) {
-  state.step = step;
-  render();
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
 
-function saveField(key, value) {
-  state.fields[key] = value;
-}
-
-function setType(type, el) {
-  state.clientType = type;
-  document.querySelectorAll(".radio-option").forEach(o => o.classList.remove("selected"));
-  el.classList.add("selected");
-  el.querySelector(".radio-circle").innerHTML = '<div class="radio-inner"></div>';
-}
-
-function handleUpload(docId, input) {
-  if (input.files && input.files[0]) {
-    state.uploads[docId] = input.files[0].name;
-    render();
-  }
-}
-
-function removeUpload(docId) {
-  delete state.uploads[docId];
-  render();
-}
-
-function toggleDecl() {
-  state.declared = !state.declared;
-  const box = document.getElementById("decl-box");
-  if (box) {
-    box.classList.toggle("checked", state.declared);
-    box.querySelector(".checkmark").textContent = state.declared ? "✓" : "";
-  }
-  const btn = document.getElementById("submit-btn");
-  if (btn) btn.disabled = !state.declared;
-}
-
-// ============================================================
-//  FORM SUBMISSION
-// ============================================================
-function submitForm() {
-  if (!state.declared) return;
-
-  const btn = document.getElementById("submit-btn");
-  if (btn) { btn.disabled = true; btn.textContent = "Submitting..."; }
-
-  const payload = {
-    action:          "submit_fica",
-    token:           state.token,
-    clientType:      state.clientType,
-    email:           state.fields["email"]      || "",
-    phone:           state.fields["phone"]      || "",
-    idNumber:        state.fields["idNumber"]   || state.fields["regNumber"] || "",
-    address:         state.fields["address"]    || state.fields["regAddress"] || "",
-    occupation:      state.fields["occupation"] || state.fields["repTitle"]   || "",
-    beneficialOwners:state.fields["bo"]         || "",
-    documents:       Object.values(state.uploads),
-  };
-
-  if (SCRIPT_URL === "PASTE_YOUR_WEB_APP_URL_HERE") {
-    // Demo mode — skip the fetch and go straight to success
-    setTimeout(() => renderSuccess(), 600);
-    return;
-  }
-
-  // Use no-cors mode with form-encoded data to avoid CORS preflight issues
-  // with Google Apps Script
-  var formData = new FormData();
-  formData.append("payload", JSON.stringify(payload));
-
-  fetch(SCRIPT_URL, {
-    method: "POST",
-    body:   formData
-  })
-  .then(function() {
-    // no-cors means we can't read the response — assume success if no error
-    renderSuccess();
-  })
-  .catch(function() {
-    // Even on network error, try to show success since Apps Script
-    // often processes the request even when fetch throws
-    renderSuccess();
+// Run this to see all current FICA records in the log
+function listAllClients() {
+  const sheet = getSheet();
+  const data  = sheet.getDataRange().getValues();
+  data.slice(1).forEach(row => {
+    Logger.log(row[COLUMNS.indexOf("Reference")] + " | " +
+               row[COLUMNS.indexOf("Client Name")] + " | " +
+               row[COLUMNS.indexOf("Status")]);
   });
 }
 
-// ============================================================
-//  RENDER — main render function
-// ============================================================
-function render() {
-  const app = document.getElementById("app");
-  const pct = (state.step / 4) * 100;
-
-  const stepLabels = ["Client type", "Information", "Documents", "Confirm"];
-  const stepsHtml  = stepLabels.map((label, i) => {
-    const n   = i + 1;
-    const cls = n < state.step ? "done" : n === state.step ? "active" : "";
-    const dot = n < state.step ? "&#10003;" : n;
-    return `<div class="step-item">
-      <div class="step-dot ${cls}">${dot}</div>
-      <div class="step-label ${n === state.step ? 'active' : ''}">${label}</div>
-    </div>`;
-  }).join("");
-
-  let content = "";
-  if      (state.step === 1) content = renderStep1();
-  else if (state.step === 2) content = renderStep2();
-  else if (state.step === 3) content = renderStep3();
-  else if (state.step === 4) content = renderStep4();
-
-  app.innerHTML = `
-    <div class="header">
-      <div class="firm-name">Albert Hibbert Attorneys Inc.</div>
-      <div class="form-title">FICA client onboarding</div>
-      <div class="form-sub">Please complete all sections and upload the required documents.</div>
-      ${state.ref ? '<div class="form-ref">&#128274; Secure &nbsp;·&nbsp; Reference ' + state.ref + '</div>' : '<div class="form-ref">&#128274; Secure link</div>'}
-    </div>
-    <div class="progress-wrap">
-      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-    </div>
-    <div class="steps">${stepsHtml}</div>
-    ${content}
-  `;
-}
-
-// ============================================================
-//  STEP 1 — Client type
-// ============================================================
-function renderStep1() {
-  const types = [
-    { id:"individual",   label:"Individual",                  sub:"Natural person — SA citizen or foreign national" },
-    { id:"company",      label:"Company / Close corporation", sub:"Registered legal entity — (Pty) Ltd, CC" },
-    { id:"trust",        label:"Trust",                       sub:"Inter vivos or testamentary trust" },
-    { id:"partnership",  label:"Partnership / Joint venture", sub:"Unincorporated partnership or JV" },
-  ];
-  const opts = types.map(t => {
-    const sel = state.clientType === t.id;
-    return `<div class="radio-option ${sel ? 'selected' : ''}" onclick="state.clientType='${t.id}';setType('${t.id}',this)">
-      <div class="radio-circle">${sel ? '<div class="radio-inner"></div>' : ''}</div>
-      <div><div class="radio-text">${t.label}</div><div class="radio-sub">${t.sub}</div></div>
-    </div>`;
-  }).join("");
-
-  return `
-    <div class="notice">&#8505;&nbsp; Select the category that best describes you as the client being onboarded.</div>
-    <div class="card">
-      <div class="card-title">Client category</div>
-      <div class="radio-group">${opts}</div>
-    </div>
-    <div class="nav-row">
-      <span></span>
-      <button class="btn btn-primary" onclick="goTo(2)">Continue &rarr;</button>
-    </div>`;
-}
-
-// ============================================================
-//  STEP 2 — Information
-// ============================================================
-function renderStep2() {
-  const isEntity = state.clientType !== "individual";
-  const f = state.fields;
-
-  let entityFields = "";
-  if (isEntity) {
-    entityFields = `
-      <div class="card">
-        <div class="card-title">Entity details</div>
-        <div class="field">
-          <label class="field-label">Registered entity name <span class="required">*</span></label>
-          <input type="text" placeholder="e.g. Propfol Springs (Pty) Ltd" value="${f.entityName||''}" onchange="saveField('entityName',this.value)" />
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label class="field-label">Registration number <span class="required">*</span></label>
-            <input type="text" placeholder="e.g. 2019/123456/07" value="${f.regNumber||''}" onchange="saveField('regNumber',this.value)" />
-          </div>
-          <div class="field">
-            <label class="field-label">VAT number</label>
-            <input type="text" placeholder="If registered" value="${f.vat||''}" onchange="saveField('vat',this.value)" />
-          </div>
-        </div>
-        <div class="field">
-          <label class="field-label">Registered address <span class="required">*</span></label>
-          <input type="text" placeholder="Street address" value="${f.regAddress||''}" onchange="saveField('regAddress',this.value)" style="margin-bottom:8px;" />
-          <input type="text" placeholder="City, province, postal code" value="${f.regAddress2||''}" onchange="saveField('regAddress2',this.value)" />
-        </div>
-        <div class="divider"></div>
-        <div class="section-sub">Authorised representative</div>
-        <div class="field-row">
-          <div class="field">
-            <label class="field-label">First name <span class="required">*</span></label>
-            <input type="text" placeholder="First name" value="${f.repFirst||''}" onchange="saveField('repFirst',this.value)" />
-          </div>
-          <div class="field">
-            <label class="field-label">Last name <span class="required">*</span></label>
-            <input type="text" placeholder="Last name" value="${f.repLast||''}" onchange="saveField('repLast',this.value)" />
-          </div>
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label class="field-label">SA ID / Passport <span class="required">*</span></label>
-            <input type="text" placeholder="ID or passport number" value="${f.repId||''}" onchange="saveField('repId',this.value)" />
-          </div>
-          <div class="field">
-            <label class="field-label">Capacity <span class="required">*</span></label>
-            <input type="text" placeholder="e.g. Director, Trustee" value="${f.repTitle||''}" onchange="saveField('repTitle',this.value)" />
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-title">Beneficial ownership</div>
-        <div class="notice">&#8505;&nbsp; List all persons who own 25% or more of the entity, directly or indirectly.</div>
-        <div class="field">
-          <label class="field-label">Beneficial owner(s) — name, ID number, % ownership <span class="required">*</span></label>
-          <textarea rows="3" placeholder="Full name — ID number — % ownership&#10;e.g. John Smith — 8501015800082 — 60%"
-            onchange="saveField('bo',this.value)">${f.bo||''}</textarea>
-        </div>
-      </div>`;
-  } else {
-    entityFields = `
-      <div class="card">
-        <div class="card-title">Personal details</div>
-        <div class="field-row">
-          <div class="field">
-            <label class="field-label">First name <span class="required">*</span></label>
-            <input type="text" placeholder="First name" value="${f.firstName||''}" onchange="saveField('firstName',this.value)" />
-          </div>
-          <div class="field">
-            <label class="field-label">Last name <span class="required">*</span></label>
-            <input type="text" placeholder="Last name" value="${f.lastName||''}" onchange="saveField('lastName',this.value)" />
-          </div>
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label class="field-label">SA ID number <span class="required">*</span></label>
-            <input type="text" placeholder="13-digit ID number" value="${f.idNumber||''}" onchange="saveField('idNumber',this.value)" />
-            <div class="field-hint">Foreign nationals: passport number</div>
-          </div>
-          <div class="field">
-            <label class="field-label">Date of birth <span class="required">*</span></label>
-            <input type="date" value="${f.dob||''}" onchange="saveField('dob',this.value)" />
-          </div>
-        </div>
-        <div class="field">
-          <label class="field-label">Residential address <span class="required">*</span></label>
-          <input type="text" placeholder="Street address" value="${f.address||''}" onchange="saveField('address',this.value)" style="margin-bottom:8px;" />
-          <input type="text" placeholder="City, province, postal code" value="${f.address2||''}" onchange="saveField('address2',this.value)" />
-        </div>
-        <div class="field">
-          <label class="field-label">Occupation <span class="required">*</span></label>
-          <input type="text" placeholder="e.g. Director, Engineer, Self-employed" value="${f.occupation||''}" onchange="saveField('occupation',this.value)" />
-        </div>
-      </div>`;
-  }
-
-  return `
-    ${entityFields}
-    <div class="card">
-      <div class="card-title">Contact details</div>
-      <div class="field-row">
-        <div class="field">
-          <label class="field-label">Email address <span class="required">*</span></label>
-          <input type="email" placeholder="email@example.com" value="${f.email||''}" onchange="saveField('email',this.value)" />
-        </div>
-        <div class="field">
-          <label class="field-label">Mobile number <span class="required">*</span></label>
-          <input type="tel" placeholder="+27 82 000 0000" value="${f.phone||''}" onchange="saveField('phone',this.value)" />
-        </div>
-      </div>
-    </div>
-    <div class="nav-row">
-      <button class="btn" onclick="goTo(1)">&larr; Back</button>
-      <button class="btn btn-primary" onclick="goTo(3)">Continue &rarr;</button>
-    </div>`;
-}
-
-// ============================================================
-//  STEP 3 — Documents
-// ============================================================
-function renderStep3() {
-  const isEntity = state.clientType !== "individual";
-  const docs = isEntity ? [
-    { id:"cipc",    label:"CIPC registration certificate",             hint:"COR 14.1 or equivalent registration document",           required:true  },
-    { id:"id_rep",  label:"Certified copy of ID — authorised rep",     hint:"SA ID or valid passport, certified within 3 months",     required:true  },
-    { id:"addr_biz",label:"Proof of business address",                 hint:"Utility bill or bank statement, not older than 3 months", required:true  },
-    { id:"bo_doc",  label:"Beneficial ownership declaration",          hint:"Signed declaration of all beneficial owners at 25%+",     required:true  },
-    { id:"res",     label:"Board resolution / authorisation letter",   hint:"Authorising the representative to act on behalf of the entity", required:false },
-  ] : [
-    { id:"id_copy",    label:"Certified copy of identity document",    hint:"SA ID card/book or valid passport, certified within 3 months", required:true  },
-    { id:"proof_addr", label:"Proof of residential address",           hint:"Utility bill, bank statement or municipality account, not older than 3 months", required:true  },
-    { id:"proof_inc",  label:"Proof of income / source of funds",      hint:"Payslip, bank statement or financial statements (last 3 months)", required:false },
-  ];
-
-  const docItems = docs.map(d => {
-    const uploaded = state.uploads[d.id];
-    const uploadedHtml = uploaded
-      ? `<div class="upload-done">
-           <span>&#10003;&nbsp;</span>
-           <span>${uploaded}</span>
-           <button class="upload-remove" onclick="removeUpload('${d.id}')">Remove</button>
-         </div>`
-      : `<div class="upload-zone">
-           <input type="file" accept=".pdf,.jpg,.jpeg,.png"
-             onchange="handleUpload('${d.id}',this)"
-             aria-label="Upload ${d.label}" />
-           <div class="upload-icon">&#8613;</div>
-           <div class="upload-label">Click to upload or drag and drop</div>
-           <div class="upload-sub">PDF, JPG or PNG &nbsp;·&nbsp; Max 10MB</div>
-         </div>`;
-    return `<div class="field">
-      <label class="field-label">
-        ${d.label}
-        ${d.required
-          ? '<span class="required">*</span>'
-          : '<span style="font-size:11px;color:#aaa;font-weight:400;">(optional)</span>'}
-      </label>
-      <div class="field-hint" style="margin-bottom:6px;">${d.hint}</div>
-      ${uploadedHtml}
-    </div>`;
-  }).join("");
-
-  return `
-    <div class="notice">&#8505;&nbsp; Upload clear, legible copies. PDF, JPG or PNG format. Maximum 10MB per file.</div>
-    <div class="card">
-      <div class="card-title">Required documents</div>
-      ${docItems}
-    </div>
-    <div class="nav-row">
-      <button class="btn" onclick="goTo(2)">&larr; Back</button>
-      <button class="btn btn-primary" onclick="goTo(4)">Continue &rarr;</button>
-    </div>`;
-}
-
-// ============================================================
-//  STEP 4 — Review and confirm
-// ============================================================
-function renderStep4() {
-  const f   = state.fields;
-  const isE = state.clientType !== "individual";
-  const name  = isE
-    ? (f.entityName || "—")
-    : ((f.firstName || "") + " " + (f.lastName || "")).trim() || "—";
-  const idVal = isE ? (f.regNumber || "—") : (f.idNumber || "—");
-  const addr  = isE ? (f.regAddress || "—") : (f.address || "—");
-  const docCount = Object.keys(state.uploads).length;
-  const typeLabel = { individual:"Individual", company:"Company / CC", trust:"Trust", partnership:"Partnership / JV" };
-
-  return `
-    <div class="card">
-      <div class="card-title">Review and confirm</div>
-      <div style="font-size:13px;color:#666;margin-bottom:1rem;line-height:1.6;">
-        Please review the details below before submitting. The firm will verify your information and notify you within 2 business days.
-      </div>
-      <div style="background:#F5F4F0;border-radius:8px;padding:1rem;margin-bottom:1rem;">
-        <table class="summary-table">
-          <tr><td class="summary-label">Client type</td><td class="summary-value">${typeLabel[state.clientType]||state.clientType}</td></tr>
-          <tr><td class="summary-label">Name</td><td class="summary-value">${name}</td></tr>
-          <tr><td class="summary-label">ID / Reg number</td><td class="summary-value">${idVal}</td></tr>
-          <tr><td class="summary-label">Address</td><td class="summary-value" style="font-size:12px;">${addr}</td></tr>
-          <tr><td class="summary-label">Email</td><td class="summary-value" style="font-size:12px;">${f.email||'—'}</td></tr>
-          <tr><td class="summary-label">Phone</td><td class="summary-value">${f.phone||'—'}</td></tr>
-          <tr>
-            <td class="summary-label">Documents uploaded</td>
-            <td class="summary-value" style="color:${docCount>0?'#3B6D11':'#A32D2D'}">
-              ${docCount} file${docCount!==1?'s':''}
-            </td>
-          </tr>
-        </table>
-      </div>
-      <div class="field">
-        <label class="field-label">Declaration <span class="required">*</span></label>
-        <div class="decl-box ${state.declared?'checked':''}" id="decl-box" onclick="toggleDecl()">
-          <div class="checkbox"><span class="checkmark">${state.declared?'&#10003;':''}</span></div>
-          <div style="font-size:12px;color:#555;line-height:1.6;">
-            I confirm that the information provided is true and correct to the best of my knowledge,
-            and that all documents uploaded are authentic. I consent to Albert Hibbert Attorneys Inc.
-            retaining this information for FICA compliance and the provision of legal services.
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="nav-row">
-      <button class="btn" onclick="goTo(3)">&larr; Back</button>
-      <button class="btn btn-primary" id="submit-btn"
-        onclick="submitForm()" ${state.declared?'':'disabled'}>
-        &#10003;&nbsp; Submit FICA application
-      </button>
-    </div>`;
-}
-
-// ============================================================
-//  SUCCESS SCREEN
-// ============================================================
-function renderSuccess() {
-  const today = new Date().toLocaleDateString("en-ZA", {
-    day:"numeric", month:"long", year:"numeric"
+// Run this to manually generate a test link
+function testGenerateLink() {
+  const result = generateClientLink({
+    clientName: "Test Client (Pty) Ltd",
+    clientType: "Company",
+    email:      CONFIG.NOTIFY_EMAIL,
+    phone:      "+27 12 000 0000",
+    ref:        "AH/2026/TEST",
   });
-  document.getElementById("app").innerHTML = `
-    <div class="header">
-      <div class="firm-name">Albert Hibbert Attorneys Inc.</div>
-      <div class="form-title">FICA client onboarding</div>
-    </div>
-    <div class="card">
-      <div class="success">
-        <div class="success-icon">&#10003;</div>
-        <div class="success-title">Application submitted</div>
-        <div class="success-sub">
-          Thank you. Your FICA application has been received by Albert Hibbert Attorneys Inc.
-          You will be notified via email once your documents have been verified,
-          within 2 business days.
-        </div>
-        <div class="ref-box">
-          <div class="ref-box-title">Reference details</div>
-          ${state.ref ? '<div class="ref-row"><span class="ref-key">Matter ref</span><span class="ref-val">'+state.ref+'</span></div>' : ''}
-          <div class="ref-row"><span class="ref-key">Submitted</span><span class="ref-val">${today}</span></div>
-          <div class="ref-row"><span class="ref-key">Status</span><span class="ref-val" style="color:#854F0B;">Pending review</span></div>
-        </div>
-      </div>
-    </div>`;
+  Logger.log("Test link: " + result.intakeUrl);
 }
-
-// ============================================================
-//  INVALID / EXPIRED SCREEN
-// ============================================================
-function renderInvalid(reason) {
-  document.getElementById("app").innerHTML = `
-    <div class="header">
-      <div class="firm-name">Albert Hibbert Attorneys Inc.</div>
-      <div class="form-title">FICA client onboarding</div>
-    </div>
-    <div class="card">
-      <div class="invalid">
-        <div class="invalid-icon">&#9888;</div>
-        <div class="invalid-title">Link unavailable</div>
-        <div class="invalid-sub">
-          ${reason}<br><br>
-          Please contact Albert Hibbert Attorneys Inc. to request a new link.
-        </div>
-      </div>
-    </div>`;
-}
-</script>
-</body>
-</html>

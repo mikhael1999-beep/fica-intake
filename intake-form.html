@@ -758,14 +758,14 @@ function renderStep4() {
         <input type="text" id="fee-sig"
           placeholder="Type your full name exactly as it appears on your ID"
           value="${state.fields['feeSignature']||''}"
-          onchange="saveField('feeSignature',this.value);document.getElementById('fee-sig-date').textContent=new Date().toLocaleDateString('en-ZA',{day:'numeric',month:'long',year:'numeric'});"
+          oninput="saveField('feeSignature',this.value);document.getElementById('fee-sig-date').textContent=new Date().toLocaleDateString('en-ZA',{day:'numeric',month:'long',year:'numeric'});var btn=document.getElementById('fee-continue-btn');if(btn)btn.disabled=this.value.trim().length<3;"
           style="font-style:italic;font-size:15px;" />
         <div class="field-hint">Signed electronically on <span id="fee-sig-date">${new Date().toLocaleDateString('en-ZA',{day:'numeric',month:'long',year:'numeric'})}</span> in terms of the Electronic Communications and Transactions Act 25 of 2002</div>
       </div>
     </div>
     <div class="nav-row">
       <button class="btn" onclick="goTo(3)">&larr; Back</button>
-      <button class="btn btn-primary" onclick="goTo(5)" ${signed?'':'disabled'}>Continue &rarr;</button>
+      <button class="btn btn-primary" id="fee-continue-btn" onclick="goTo(5)" ${signed?'':'disabled'}>Continue &rarr;</button>
     </div>`;
 }
 

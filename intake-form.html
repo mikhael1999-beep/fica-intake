@@ -1,882 +1,1242 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-ZA">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FICA Onboarding — Albert Hibbert Attorneys Inc.</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#141414" />
+<title>Client onboarding (FICA) — Albert Hibbert Inc Attorneys</title>
+<style>
+  :root {
+    --ink: #141414; --ink-2: #3a3a37; --muted: #6b6b66; --faint: #9a9a94;
+    --line: #e2e0da; --line-2: #cfccc4; --bg: #f3f2ee; --card: #ffffff; --soft: #f8f7f4;
+    --red: #a4161a; --red-dark: #7f1014; --red-soft: #fbefef;
+    --ok: #2f6b1f; --ok-soft: #edf5e6; --ok-line: #9cc47f;
+    --warn: #7a4f00; --warn-soft: #fdf6e3; --warn-line: #e6c36a;
+    --info: #1d4f7a; --info-soft: #ecf3fa; --info-line: #9cc0e3;
+    --radius: 10px;
+    --serif: Georgia, "Times New Roman", Times, serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; font-family: var(--sans); font-size: 15px; line-height: 1.5; color: var(--ink); background: var(--bg); }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  a { color: var(--red); }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #F5F4F0;
-      color: #1a1a18;
-      min-height: 100vh;
-      padding: 2rem 1rem 4rem;
-    }
+  /* Masthead */
+  .masthead { background: var(--ink); color: #fff; border-bottom: 3px solid var(--red); }
+  .mast-inner { max-width: 720px; margin: 0 auto; padding: 18px 20px; display: flex; align-items: center; gap: 14px; }
+  .brand-mark { width: 40px; height: 40px; border: 1.5px solid #fff; display: grid; place-items: center; font-family: var(--serif); font-size: 17px; letter-spacing: .04em; flex-shrink: 0; }
+  .brand-name { font-family: var(--serif); font-size: 17px; letter-spacing: .08em; text-transform: uppercase; }
+  .brand-sub { font-size: 12px; color: #bdbdb7; letter-spacing: .04em; }
+  .mast-ref { margin-left: auto; font-size: 12px; color: #d9d9d4; border: 1px solid #4a4a46; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
 
-    .page { max-width: 620px; margin: 0 auto; }
+  .page { max-width: 720px; margin: 0 auto; padding: 22px 16px 48px; }
 
-    /* Header */
-    .header {
-      text-align: center;
-      padding: 2rem 1rem 1.5rem;
-      background: #fff;
-      border-radius: 12px;
-      border: 0.5px solid #e0dfd8;
-      margin-bottom: 1.25rem;
-    }
-    .firm-name { font-size: 12px; font-weight: 500; color: #888; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px; }
-    .form-title { font-size: 22px; font-weight: 500; color: #1a1a18; margin-bottom: 6px; }
-    .form-sub { font-size: 14px; color: #666; line-height: 1.6; }
-    .form-ref {
-      display: inline-flex; align-items: center; gap: 6px;
-      margin-top: 12px; background: #F5F4F0;
-      border: 0.5px solid #e0dfd8; border-radius: 6px;
-      padding: 5px 12px; font-size: 12px; color: #888;
-    }
+  /* Stepper */
+  .stepper { display: flex; margin: 4px 0 22px; counter-reset: s; }
+  .stp { flex: 1; text-align: center; position: relative; font-size: 11px; color: var(--faint); }
+  .stp::before { content: ""; position: absolute; top: 13px; left: -50%; width: 100%; height: 2px; background: var(--line); z-index: 0; }
+  .stp:first-child::before { display: none; }
+  .stp.done::before, .stp.active::before { background: var(--red); }
+  .stp .dot { position: relative; z-index: 1; width: 28px; height: 28px; margin: 0 auto 6px; border-radius: 50%; display: grid; place-items: center; background: #fff; border: 1.5px solid var(--line-2); font-weight: 600; font-size: 12px; color: var(--faint); }
+  .stp.active .dot { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .stp.done .dot { background: var(--red); border-color: var(--red); color: #fff; }
+  .stp.active { color: var(--ink); font-weight: 600; }
+  .stp button { all: unset; cursor: pointer; display: block; }
+  .stp button:focus-visible .dot { outline: 2px solid var(--red); outline-offset: 2px; }
+  .step-compact { display: none; font-size: 13px; color: var(--muted); margin: 0 0 16px; }
+  .step-compact strong { color: var(--ink); }
+  .bar { height: 4px; background: var(--line); border-radius: 4px; overflow: hidden; margin-bottom: 8px; display: none; }
+  .bar > span { display: block; height: 100%; background: var(--red); transition: width .3s; }
 
-    /* Progress */
-    .progress-wrap { margin-bottom: 1.25rem; }
-    .progress-bar { height: 3px; background: #e0dfd8; border-radius: 2px; overflow: hidden; }
-    .progress-fill { height: 100%; background: #1a1a18; border-radius: 2px; transition: width 0.3s ease; }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: 26px; line-height: 1.25; margin: 0 0 6px; }
+  .lead { color: var(--muted); margin: 0 0 18px; }
 
-    /* Steps indicator */
-    .steps {
-      display: flex; align-items: flex-start;
-      justify-content: center; gap: 0;
-      margin-bottom: 1.5rem;
-    }
-    .step-item { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; position: relative; }
-    .step-item:not(:last-child)::after {
-      content: ''; position: absolute; top: 12px; left: 50%;
-      width: 100%; height: 0.5px; background: #e0dfd8; z-index: 0;
-    }
-    .step-dot {
-      width: 24px; height: 24px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 500;
-      border: 0.5px solid #ccc; background: #fff;
-      color: #aaa; z-index: 1; position: relative;
-      transition: all 0.2s;
-    }
-    .step-dot.active { background: #1a1a18; color: #fff; border-color: #1a1a18; }
-    .step-dot.done { background: #EAF3DE; color: #3B6D11; border-color: #97C459; font-size: 13px; }
-    .step-label { font-size: 10px; color: #aaa; white-space: nowrap; }
-    .step-label.active { color: #1a1a18; font-weight: 500; }
+  /* Cards */
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; margin-bottom: 14px; }
+  .card h2 { font-size: 15px; font-weight: 650; margin: 0 0 4px; }
+  .card .card-sub { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
+  .card.center { text-align: center; padding: 40px 20px; }
 
-    /* Card */
-    .card {
-      background: #fff; border-radius: 12px;
-      border: 0.5px solid #e0dfd8; padding: 1.5rem;
-      margin-bottom: 1rem;
-    }
-    .card-title {
-      font-size: 14px; font-weight: 500; color: #1a1a18;
-      margin-bottom: 1.25rem; display: flex; align-items: center; gap: 8px;
-    }
-    .card-title svg { width: 18px; height: 18px; color: #aaa; flex-shrink: 0; }
+  /* Notices */
+  .notice { border-radius: 8px; padding: 11px 14px; font-size: 13px; margin: 0 0 14px; border: 1px solid var(--info-line); background: var(--info-soft); color: var(--info); }
+  .notice.warn { border-color: var(--warn-line); background: var(--warn-soft); color: var(--warn); }
+  .notice.err { border-color: #e3a0a2; background: var(--red-soft); color: var(--red-dark); }
+  .notice.ok { border-color: var(--ok-line); background: var(--ok-soft); color: var(--ok); }
+  .notice ul { margin: 6px 0 0; padding-left: 18px; }
 
-    /* Fields */
-    .field { margin-bottom: 1rem; }
-    .field:last-child { margin-bottom: 0; }
-    .field-label {
-      display: block; font-size: 12px; font-weight: 500;
-      color: #555; margin-bottom: 5px;
-    }
-    .required { color: #A32D2D; }
-    .field-hint { font-size: 11px; color: #aaa; margin-top: 4px; }
-    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  /* Fields */
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+  .grid .full { grid-column: 1 / -1; }
+  .field { margin-bottom: 14px; min-width: 0; }
+  .field > label, fieldset > legend { display: block; font-size: 13px; font-weight: 600; color: var(--ink-2); margin-bottom: 5px; padding: 0; }
+  .req { color: var(--red); margin-left: 2px; }
+  .opt { color: var(--faint); font-weight: 400; font-size: 12px; margin-left: 4px; }
+  .hint { font-size: 12px; color: var(--muted); margin: -2px 0 6px; }
+  input[type=text], input[type=email], input[type=tel], input[type=date], input[type=number], select, textarea {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--line-2); border-radius: 8px; background: #fff; font-size: 15px; outline: none; transition: border-color .15s, box-shadow .15s;
+  }
+  select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, #777 50%), linear-gradient(135deg, #777 50%, transparent 50%); background-position: calc(100% - 17px) 50%, calc(100% - 12px) 50%; background-size: 5px 5px; background-repeat: no-repeat; padding-right: 32px; }
+  textarea { resize: vertical; min-height: 84px; }
+  input:focus, select:focus, textarea:focus { border-color: var(--ink); box-shadow: 0 0 0 3px rgba(20,20,20,.08); }
+  .err-msg { display: none; font-size: 12px; color: var(--red); margin-top: 4px; }
+  .has-error input, .has-error select, .has-error textarea { border-color: var(--red); }
+  .has-error .err-msg { display: block; }
+  .has-error > .choice-group .choice { border-color: #e3a0a2; }
+  .ok-msg { font-size: 12px; color: var(--ok); margin-top: 4px; }
+  fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 
-    input[type="text"], input[type="email"], input[type="tel"],
-    input[type="date"], select, textarea {
-      width: 100%; padding: 9px 12px;
-      border-radius: 8px; border: 0.5px solid #ccc;
-      background: #fff; color: #1a1a18;
-      font-size: 14px; font-family: inherit;
-      outline: none; transition: border-color 0.15s;
-      appearance: none;
-    }
-    input:focus, select:focus, textarea:focus { border-color: #888; }
-    input::placeholder, textarea::placeholder { color: #bbb; }
-    textarea { resize: vertical; }
+  /* Choices (real radios / checkboxes) */
+  .choice-group { display: grid; gap: 8px; }
+  .choice-group.inline { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+  .choice { position: relative; display: flex; gap: 10px; align-items: flex-start; padding: 11px 12px; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; background: #fff; transition: border-color .12s, background .12s; }
+  .choice:hover { background: var(--soft); }
+  .choice input { margin: 3px 0 0; width: 17px; height: 17px; accent-color: var(--ink); flex-shrink: 0; }
+  .choice:has(input:checked) { border-color: var(--ink); background: var(--soft); }
+  .choice:has(input:focus-visible) { box-shadow: 0 0 0 3px rgba(164,22,26,.25); }
+  .choice-title { font-weight: 600; font-size: 14px; }
+  .choice-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .type-grid { grid-template-columns: 1fr 1fr; }
+  .type-grid .choice { padding: 14px; }
 
-    /* Radio options */
-    .radio-group { display: flex; flex-direction: column; gap: 8px; }
-    .radio-option {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 10px 12px; border-radius: 8px;
-      border: 0.5px solid #e0dfd8; cursor: pointer;
-      transition: all 0.1s;
-    }
-    .radio-option:hover { background: #F5F4F0; }
-    .radio-option.selected { border-color: #888; background: #F5F4F0; }
-    .radio-circle {
-      width: 16px; height: 16px; border-radius: 50%;
-      border: 0.5px solid #ccc; flex-shrink: 0;
-      margin-top: 2px; display: flex; align-items: center;
-      justify-content: center; transition: all 0.1s;
-    }
-    .radio-option.selected .radio-circle { border-color: #1a1a18; background: #1a1a18; }
-    .radio-inner { width: 6px; height: 6px; border-radius: 50%; background: #fff; }
-    .radio-text { font-size: 14px; color: #1a1a18; font-weight: 500; }
-    .radio-sub { font-size: 12px; color: #888; margin-top: 2px; }
+  .check { display: flex; gap: 10px; align-items: flex-start; padding: 12px; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; font-size: 13px; color: var(--ink-2); background: #fff; margin-bottom: 8px; }
+  .field > label.check { display: flex; font-weight: 400; font-size: 13px; color: var(--ink-2); margin-bottom: 0; }
+  .check input { margin: 2px 0 0; width: 17px; height: 17px; accent-color: var(--ink); flex-shrink: 0; }
+  .check:has(input:checked) { border-color: var(--ink); background: var(--soft); }
+  .has-error .check { border-color: #e3a0a2; }
 
-    /* Upload zone */
-    .upload-zone {
-      border: 0.5px dashed #ccc; border-radius: 8px;
-      padding: 1.25rem; text-align: center; cursor: pointer;
-      transition: background 0.15s; background: #F5F4F0;
-      position: relative;
-    }
-    .upload-zone:hover { background: #eeeee8; }
-    .upload-zone input[type="file"] {
-      position: absolute; inset: 0; opacity: 0;
-      cursor: pointer; width: 100%; height: 100%;
-    }
-    .upload-icon { font-size: 22px; margin-bottom: 6px; color: #aaa; }
-    .upload-label { font-size: 13px; font-weight: 500; color: #1a1a18; }
-    .upload-sub { font-size: 11px; color: #aaa; margin-top: 3px; }
+  details.more { font-size: 13px; color: var(--ink-2); margin: -4px 0 12px; }
+  details.more summary { cursor: pointer; color: var(--red); font-weight: 600; }
+  details.more div { padding: 8px 0 0; }
 
-    .upload-done {
-      display: flex; align-items: center; gap: 8px;
-      padding: 9px 12px; border-radius: 8px;
-      border: 0.5px solid #97C459; background: #EAF3DE;
-      font-size: 12px; color: #3B6D11; margin-top: 6px;
-    }
-    .upload-remove {
-      margin-left: auto; background: none; border: none;
-      cursor: pointer; font-size: 12px; color: #3B6D11;
-      font-family: inherit; padding: 0;
-    }
+  /* People */
+  .person { border: 1px solid var(--line); border-radius: 8px; padding: 14px 14px 2px; margin-bottom: 10px; background: var(--soft); }
+  .person-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 13px; font-weight: 650; }
+  .roles { display: flex; flex-wrap: wrap; gap: 6px; }
+  .role { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border: 1px solid var(--line-2); border-radius: 20px; background: #fff; font-size: 12.5px; cursor: pointer; }
+  .role input { width: 15px; height: 15px; margin: 0; accent-color: var(--ink); }
+  .role:has(input:checked) { border-color: var(--ink); background: var(--ink); color: #fff; }
 
-    /* Notice */
-    .notice {
-      background: #E6F1FB; border: 0.5px solid #85B7EB;
-      border-radius: 8px; padding: 10px 14px;
-      font-size: 12px; color: #0C447C;
-      display: flex; gap: 8px; align-items: flex-start;
-      margin-bottom: 1rem;
-    }
+  /* Uploads */
+  .doc { padding: 14px 0; border-top: 1px solid var(--line); }
+  .doc:first-of-type { border-top: 0; padding-top: 0; }
+  .doc-head { display: flex; gap: 10px; align-items: baseline; justify-content: space-between; }
+  .doc-title { font-weight: 600; font-size: 14px; }
+  .drop { position: relative; margin-top: 8px; border: 1.5px dashed var(--line-2); border-radius: 8px; padding: 14px; text-align: center; background: var(--soft); font-size: 13px; color: var(--muted); transition: background .12s, border-color .12s; }
+  .drop:hover, .drop:focus-within { background: #efeee9; border-color: var(--ink); }
+  .drop input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+  .drop strong { color: var(--ink); }
+  .file { display: flex; align-items: center; gap: 8px; margin-top: 6px; padding: 8px 10px; border-radius: 8px; background: var(--ok-soft); border: 1px solid var(--ok-line); font-size: 13px; color: var(--ok); }
+  .file .fname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
+  .file .fsize { color: #5c7d4c; font-size: 12px; white-space: nowrap; }
+  .later { display: inline-flex; gap: 6px; align-items: center; font-size: 12.5px; color: var(--muted); margin-top: 8px; cursor: pointer; }
+  .later input { accent-color: var(--ink); }
+  .meter { font-size: 12px; color: var(--muted); margin-top: 10px; }
+  .meter .track { height: 5px; background: var(--line); border-radius: 4px; overflow: hidden; margin-top: 4px; }
+  .meter .track span { display: block; height: 100%; background: var(--ink); }
 
-    /* Divider */
-    .divider { height: 0.5px; background: #e0dfd8; margin: 1.25rem 0; }
+  /* Agreement */
+  .agreement { border: 1px solid var(--line); border-radius: 8px; background: var(--soft); max-height: 420px; overflow-y: auto; padding: 18px; font-size: 13.5px; line-height: 1.65; color: var(--ink-2); }
+  .agreement h3 { font-family: var(--serif); font-weight: 400; font-size: 18px; text-align: center; letter-spacing: .06em; margin: 0 0 14px; color: var(--ink); }
+  .agreement h4 { font-size: 13px; letter-spacing: .04em; margin: 16px 0 4px; color: var(--ink); }
+  .agreement p { margin: 0 0 8px; }
+  .agreement .hl { background: #fff4c2; padding: 1px 2px; }
+  table.rates { width: 100%; border-collapse: collapse; font-size: 12.5px; margin: 8px 0 10px; background: #fff; }
+  table.rates th { background: var(--ink); color: #fff; font-weight: 600; text-align: left; padding: 7px 8px; }
+  table.rates td { padding: 7px 8px; border-bottom: 1px solid var(--line); }
+  table.rates td + td, table.rates th + th { text-align: right; white-space: nowrap; }
+  .sig-preview { margin-top: 8px; padding: 12px 14px; border: 1px dashed var(--line-2); border-radius: 8px; background: #fff; }
+  .sig-preview .sig { font-family: "Segoe Script", "Brush Script MT", "Snell Roundhand", cursive; font-size: 26px; color: #0d2a52; line-height: 1.2; min-height: 32px; }
+  .sig-preview .sig-meta { font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); margin-top: 6px; padding-top: 6px; }
 
-    /* Section subtitle */
-    .section-sub {
-      font-size: 13px; font-weight: 500; color: #1a1a18;
-      margin-bottom: 1rem; margin-top: 0.25rem;
-      display: flex; align-items: center; gap: 8px;
-    }
+  /* Review */
+  .rev { border: 1px solid var(--line); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+  .rev-head { display: flex; justify-content: space-between; align-items: center; padding: 9px 14px; background: var(--soft); border-bottom: 1px solid var(--line); font-size: 13px; font-weight: 650; }
+  .rev dl { margin: 0; padding: 6px 14px 10px; display: grid; grid-template-columns: minmax(120px, 38%) 1fr; gap: 6px 12px; font-size: 13px; }
+  .rev dt { color: var(--muted); }
+  .rev dd { margin: 0; font-weight: 500; overflow-wrap: anywhere; white-space: pre-line; }
+  .linkbtn { all: unset; cursor: pointer; color: var(--red); font-size: 12.5px; font-weight: 600; }
+  .linkbtn:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+  .privacy { max-height: 260px; overflow-y: auto; font-size: 12.5px; color: var(--ink-2); border: 1px solid var(--line); border-radius: 8px; padding: 14px; background: var(--soft); margin-bottom: 12px; }
+  .privacy p { margin: 0 0 8px; }
 
-    /* Nav */
-    .nav-row {
-      display: flex; align-items: center;
-      justify-content: space-between;
-      margin-top: 1.5rem; padding-top: 1.25rem;
-      border-top: 0.5px solid #e0dfd8;
-    }
+  /* Buttons */
+  .nav { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 18px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 22px; border-radius: 8px; border: 1px solid var(--line-2); background: #fff; font-weight: 600; font-size: 15px; cursor: pointer; min-height: 46px; }
+  .btn:hover { background: var(--soft); }
+  .btn:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+  .btn-primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .btn-primary:hover { background: #2b2b28; }
+  .btn-red { background: var(--red); border-color: var(--red); color: #fff; }
+  .btn-red:hover { background: var(--red-dark); }
+  .btn[disabled] { opacity: .5; cursor: progress; }
+  .btn-sm { padding: 6px 12px; min-height: 0; font-size: 13px; }
+  .btn-x { all: unset; cursor: pointer; font-size: 12.5px; color: inherit; text-decoration: underline; }
+  .btn-x:focus-visible { outline: 2px solid var(--red); }
 
-    /* Buttons */
-    .btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 10px 20px; font-size: 14px; border-radius: 8px;
-      border: 0.5px solid #ccc; background: #fff; color: #1a1a18;
-      cursor: pointer; font-family: inherit; transition: background 0.1s;
-      font-weight: 500;
-    }
-    .btn:hover { background: #F5F4F0; }
-    .btn-primary {
-      background: #1a1a18; color: #fff; border-color: #1a1a18;
-    }
-    .btn-primary:hover { opacity: 0.88; background: #1a1a18; }
-    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .spinner { width: 34px; height: 34px; border: 3px solid var(--line); border-top-color: var(--red); border-radius: 50%; margin: 0 auto 14px; animation: spin .9s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .big-icon { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; margin: 0 auto 16px; font-size: 30px; }
+  .big-icon.ok { background: var(--ok-soft); color: var(--ok); }
+  .big-icon.bad { background: var(--red-soft); color: var(--red); }
+  .receipt { text-align: left; max-width: 360px; margin: 18px auto; background: var(--soft); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; font-size: 13px; }
+  .receipt div { display: flex; justify-content: space-between; gap: 16px; padding: 3px 0; }
+  .receipt span:first-child { color: var(--muted); }
+  .receipt span:last-child { font-weight: 600; text-align: right; }
 
-    /* Declaration checkbox */
-    .decl-box {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 12px; border-radius: 8px;
-      border: 0.5px solid #e0dfd8; cursor: pointer;
-      transition: all 0.1s;
-    }
-    .decl-box.checked { border-color: #888; background: #F5F4F0; }
-    .checkbox {
-      width: 16px; height: 16px; border-radius: 4px;
-      border: 0.5px solid #ccc; background: #fff;
-      flex-shrink: 0; margin-top: 2px; display: flex;
-      align-items: center; justify-content: center;
-      transition: all 0.1s;
-    }
-    .decl-box.checked .checkbox { background: #1a1a18; border-color: #1a1a18; }
-    .checkmark { color: #fff; font-size: 11px; }
+  footer.foot { max-width: 720px; margin: 0 auto; padding: 0 16px 40px; font-size: 12px; color: var(--muted); text-align: center; line-height: 1.7; }
+  footer.foot .btn-x { color: var(--muted); }
 
-    /* Summary table */
-    .summary-table { width: 100%; font-size: 13px; }
-    .summary-table td { padding: 6px 0; border-bottom: 0.5px solid #e0dfd8; }
-    .summary-table tr:last-child td { border-bottom: none; }
-    .summary-label { color: #888; width: 45%; }
-    .summary-value { font-weight: 500; color: #1a1a18; text-align: right; }
-
-    /* Success screen */
-    .success { text-align: center; padding: 3rem 1rem; }
-    .success-icon {
-      width: 60px; height: 60px; border-radius: 50%;
-      background: #EAF3DE; display: flex; align-items: center;
-      justify-content: center; margin: 0 auto 1.5rem; font-size: 28px;
-    }
-    .success-title { font-size: 20px; font-weight: 500; margin-bottom: 8px; }
-    .success-sub { font-size: 14px; color: #666; line-height: 1.7; max-width: 380px; margin: 0 auto 2rem; }
-    .ref-box {
-      background: #F5F4F0; border-radius: 8px; padding: 1rem;
-      display: inline-block; text-align: left; min-width: 280px;
-    }
-    .ref-box-title { font-size: 11px; font-weight: 500; color: #aaa; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px; }
-    .ref-row { display: flex; justify-content: space-between; gap: 24px; font-size: 13px; padding: 4px 0; }
-    .ref-key { color: #888; }
-    .ref-val { font-weight: 500; }
-
-    /* Error state */
-    .error-msg { font-size: 11px; color: #A32D2D; margin-top: 4px; display: none; }
-    .field-error input, .field-error select, .field-error textarea { border-color: #E24B4A; }
-    .field-error .error-msg { display: block; }
-
-    /* Expired/invalid screen */
-    .invalid { text-align: center; padding: 3rem 1rem; }
-    .invalid-icon { font-size: 40px; margin-bottom: 1rem; }
-    .invalid-title { font-size: 18px; font-weight: 500; margin-bottom: 8px; }
-    .invalid-sub { font-size: 14px; color: #666; line-height: 1.6; }
-
-    @media (max-width: 480px) {
-      .field-row { grid-template-columns: 1fr; }
-      body { padding: 1rem 0.75rem 3rem; }
-    }
-  </style>
+  @media (max-width: 600px) {
+    .brand-name { letter-spacing: .04em; }
+    table.rates { font-size: 11.5px; }
+    table.rates td, table.rates th { padding: 6px 5px; }
+    table.rates td + td, table.rates th + th { white-space: normal; }
+    .agreement { padding: 14px; }
+    .grid, .type-grid { grid-template-columns: 1fr; }
+    .stepper { display: none; }
+    .step-compact, .bar { display: block; }
+    h1 { font-size: 22px; }
+    .card { padding: 16px; }
+    .brand-name { font-size: 14px; }
+    .mast-inner { padding: 14px 16px; }
+    .nav .btn { flex: 1; }
+    .rev dl { grid-template-columns: 1fr; gap: 0 0; }
+    .rev dd { margin-bottom: 8px; }
+  }
+  @media print {
+    .masthead, .stepper, .nav, footer.foot, .bar, .step-compact { display: none !important; }
+    body { background: #fff; }
+  }
+</style>
 </head>
 <body>
-<div class="page" id="app">
-  <!-- Rendered by JavaScript below -->
-</div>
+<header class="masthead">
+  <div class="mast-inner">
+    <div class="brand-mark" aria-hidden="true">AH</div>
+    <div>
+      <div class="brand-name">Albert Hibbert Inc Attorneys</div>
+      <div class="brand-sub">Client onboarding</div>
+    </div>
+    <div class="mast-ref" id="mast-ref" hidden></div>
+  </div>
+</header>
+
+<main class="page" id="app" aria-live="polite">
+  <noscript><div class="card center">This form needs JavaScript. Please enable it, or contact us on 012 346 4633.</div></noscript>
+</main>
+
+<footer class="foot">
+  Albert Hibbert Inc Attorneys · 231 Lange Street, Nieuw Muckleneuk, Pretoria<br />
+  Tel 012 346 4633 · <a href="mailto:albert@hibbertlaw.co.za">albert@hibbertlaw.co.za</a><br />
+  Your information is sent over an encrypted connection. · <button class="btn-x" type="button" data-act="clear">Clear this form</button>
+</footer>
 
 <script>
-// ============================================================
-//  CONFIGURATION
-//  Replace the URL below with your deployed Apps Script URL
-//  from Step 5 of the setup guide.
-// ============================================================
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxj81OI9iWqWiwUBuF2ESpkggxWj17uOiglZq_kq6t_ArdEjRnPDRQuqZzHvaxAp9-7/exec";
+(function () {
+  "use strict";
 
-// ============================================================
-//  STATE
-// ============================================================
-let state = {
-  step: 1,
-  clientType: "individual",
-  token: null,
-  clientName: "",
-  ref: "",
-  declared: false,
-  uploads: {},
-  fields: {}
-};
+  // ============================================================
+  //  CONFIGURATION
+  // ============================================================
+  var CONFIG = {
+    SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxj81OI9iWqWiwUBuF2ESpkggxWj17uOiglZq_kq6t_ArdEjRnPDRQuqZzHvaxAp9-7/exec",
 
-// ============================================================
-//  INIT — read token from URL on page load
-// ============================================================
-window.addEventListener("DOMContentLoaded", function () {
+    // false = the Apps Script does not return a JSON confirmation (current set-up).
+    //         The form then only knows the upload left the device; a network failure
+    //         shows an error and a retry button instead of a false "success".
+    // true  = doPost returns ContentService JSON such as {"ok": true}. The form then
+    //         shows success only when the script confirms it. Recommended.
+    SERVER_CONFIRMS: false,
 
-  // Robust token reading — works from local files and hosted URLs
-  var token = null;
+    FORM_VERSION: "2.0",
+    AGREEMENT_VERSION: "FA-2026-11",
+    AGREEMENT_PDF: "https://mikhael1999-beep.github.io/fica-intake/fee-agreement.pdf",
+    MAX_FILE_MB: 10,
+    MAX_TOTAL_MB: 30,          // Apps Script rejects very large POSTs; base64 adds ~33%
+    COMPRESS_OVER_MB: 1.2,     // photos larger than this are resized before upload
+    IMAGE_MAX_PX: 2200,
+    FIRM: "Albert Hibbert Inc Attorneys",
+    FIRM_TEL: "012 346 4633",
+    FIRM_EMAIL: "albert@hibbertlaw.co.za"
+  };
+  var DRAFT_KEY = "ah_fica_draft_v2";
+  var MB = 1024 * 1024;
 
-  // Method 1: standard URLSearchParams
-  try {
-    var params = new URLSearchParams(window.location.search);
-    token = params.get("token");
-  } catch(e) {}
+  // ============================================================
+  //  REFERENCE DATA
+  // ============================================================
+  var STEPS = ["Client type", "Details", "Matter & FICA", "Documents", "Fee agreement", "Review & submit"];
 
-  // Method 2: manual parse of href (fallback for local file edge cases)
-  if (!token) {
-    var href = window.location.href;
-    var match = href.match(/[?&]token=([^&]+)/);
-    if (match) token = decodeURIComponent(match[1]);
-  }
-
-  // Method 3: check hash fragment (some QR code generators use #token=...)
-  if (!token) {
-    var hash = window.location.hash;
-    var hashMatch = hash.match(/token=([^&]+)/);
-    if (hashMatch) token = decodeURIComponent(hashMatch[1]);
-  }
-
-  // If no token — public/reception mode, render form directly
-  if (!token) {
-    state.token = "WALK_IN_" + Date.now();
-    state.ref = "";
-    render();
-    return;
-  }
-
-  state.token = token;
-
-  // If Apps Script URL is configured, validate the token
-  if (SCRIPT_URL !== "PASTE_YOUR_WEB_APP_URL_HERE") {
-    validateToken(token);
-  } else {
-    render();
-  }
-});
-
-// ============================================================
-//  TOKEN VALIDATION (used in production)
-// ============================================================
-function validateToken(token) {
-  fetch(SCRIPT_URL + "?token=" + token)
-    .then(r => r.json())
-    .then(data => {
-      if (!data.valid) {
-        renderInvalid(data.reason || "This link is no longer valid.");
-        return;
-      }
-      state.clientName = data.clientName || "";
-      state.ref        = data.ref        || "";
-      state.clientType = (data.clientType || "individual").toLowerCase();
-      render();
-    })
-    .catch(() => {
-      // If fetch fails (e.g. SCRIPT_URL not set yet), render form anyway
-      render();
-    });
-}
-
-// ============================================================
-//  NAVIGATION
-// ============================================================
-function goTo(step) {
-  state.step = step;
-  render();
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-function saveField(key, value) {
-  state.fields[key] = value;
-}
-
-function setType(type, el) {
-  state.clientType = type;
-  document.querySelectorAll(".radio-option").forEach(o => o.classList.remove("selected"));
-  el.classList.add("selected");
-  el.querySelector(".radio-circle").innerHTML = '<div class="radio-inner"></div>';
-}
-
-function handleUpload(docId, input) {
-  if (input.files && input.files[0]) {
-    var file = input.files[0];
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      // Store file name, type and base64 data
-      state.uploads[docId] = {
-        name: file.name,
-        type: file.type,
-        size: file.size,
-        data: e.target.result.split(",")[1] // base64 only
-      };
-      render();
-    };
-    reader.readAsDataURL(file);
-  }
-}
-
-function removeUpload(docId) {
-  delete state.uploads[docId];
-  render();
-}
-
-function toggleDecl() {
-  state.declared = !state.declared;
-  const box = document.getElementById("decl-box");
-  if (box) {
-    box.classList.toggle("checked", state.declared);
-    box.querySelector(".checkmark").textContent = state.declared ? "✓" : "";
-  }
-  const btn = document.getElementById("submit-btn");
-  if (btn) btn.disabled = !state.declared;
-}
-
-// ============================================================
-//  FORM SUBMISSION
-// ============================================================
-function submitForm() {
-  if (!state.declared) return;
-
-  const btn = document.getElementById("submit-btn");
-  if (btn) { btn.disabled = true; btn.textContent = "Submitting..."; }
-
-  const payload = {
-    action:           "submit_fica",
-    token:            state.token,
-    clientType:       state.clientType,
-    firstName:        state.fields["firstName"]  || "",
-    lastName:         state.fields["lastName"]   || "",
-    entityName:       state.fields["entityName"] || "",
-    email:            state.fields["email"]      || "",
-    phone:            state.fields["phone"]      || "",
-    idNumber:         state.fields["idNumber"]   || state.fields["regNumber"] || "",
-    regNumber:        state.fields["regNumber"]  || "",
-    address:          state.fields["address"]    || state.fields["regAddress"] || "",
-    regAddress:       state.fields["regAddress"] || "",
-    occupation:       state.fields["occupation"] || state.fields["repTitle"]  || "",
-    repTitle:         state.fields["repTitle"]   || "",
-    beneficialOwners: state.fields["bo"]         || "",
-    feeSignature:     state.fields["feeSignature"] || "",
-    feeSignedDate:    new Date().toLocaleDateString("en-ZA"),
-    documents:        Object.values(state.uploads).map(function(f) {
-      return { name: f.name, type: f.type, data: f.data };
-    }),
+  var TYPES = {
+    individual:  { label: "Individual", sub: "A natural person — South African or foreign national", entity: false },
+    company:     { label: "Company or close corporation", sub: "(Pty) Ltd, Ltd, NPC, Inc or CC", entity: true,
+                   nameLabel: "Registered name", regLabel: "Registration number", regPh: "e.g. 2019/123456/07", regReq: true,
+                   who: "the company or close corporation" },
+    trust:       { label: "Trust", sub: "Inter vivos (family or business) or testamentary trust", entity: true,
+                   nameLabel: "Name of the trust", regLabel: "Master's reference number", regPh: "e.g. IT 1234/2015", regReq: true,
+                   who: "the trust" },
+    partnership: { label: "Partnership or joint venture", sub: "Unincorporated partnership, JV or consortium", entity: true,
+                   nameLabel: "Name of the partnership / JV", regLabel: "Registration number", regPh: "If any", regReq: false,
+                   who: "the partnership or joint venture" }
   };
 
-  if (SCRIPT_URL === "PASTE_YOUR_WEB_APP_URL_HERE") {
-    // Demo mode — skip the fetch and go straight to success
-    setTimeout(() => renderSuccess(), 600);
-    return;
+  var ROLES = {
+    company: [["shareholder", "Shareholder / member (5% or more)"], ["director", "Director / CC member"], ["executive", "Executive manager"], ["control", "Exercises control otherwise"]],
+    trust: [["founder", "Founder"], ["trustee", "Trustee"], ["beneficiary", "Beneficiary"], ["control", "Exercises control (e.g. protector)"]],
+    partnership: [["partner", "Partner"], ["silent", "Silent partner"], ["executive", "Exercises executive control"], ["authorised", "Authorised to act"]]
+  };
+
+  var PEOPLE_INTRO = {
+    company: "List every natural person who (a) holds 5% or more of the shares or members' interest, directly or through other companies or trusts; (b) otherwise exercises effective control; and (c) every director, CC member and executive manager. If a shareholder is itself a company or trust, list the people behind it.",
+    trust: "List the founder(s), every trustee, each named beneficiary, and anyone else who exercises effective control over the trust (for example a protector). If beneficiaries are described only as a class, describe the class below.",
+    partnership: "List every partner (including silent partners), anyone who exercises executive control, and anyone authorised to act for the partnership. If a partner is a company or trust, list the people behind it."
+  };
+
+  var PROVINCES = ["Eastern Cape", "Free State", "Gauteng", "KwaZulu-Natal", "Limpopo", "Mpumalanga", "North West", "Northern Cape", "Western Cape", "Outside South Africa"];
+  var SERVICES = ["Litigation / court proceedings", "Tender or procurement dispute", "Arbitration or mediation", "Contract drafting or review", "Construction / JBCC matter", "Conveyancing / property transfer", "Debt recovery", "Liquidation or insolvency", "Tax / SARS matter", "Labour matter", "Other"];
+  var FUNDS = ["Salary / employment income", "Business income", "Sale of property or another asset", "Investments or savings", "Inheritance", "Loan or finance", "Other"];
+
+  function docSlots() {
+    var t = S.type, f = S.f;
+    var funds = { id: "funds", label: "Proof of source of funds", hint: "For example payslips, bank statements, a sale agreement or a loan agreement showing where the money comes from.", req: f.trustFunds === "yes" };
+    var other = { id: "other", label: "Any other documents", hint: "Anything else relevant to your matter (summons, letters, contracts).", req: false };
+    if (t === "individual") return [
+      { id: "id", label: f.citizenship === "foreign" ? "Certified copy of passport" : "Certified copy of ID", hint: "Smart ID card (both sides), green ID book or passport, certified as a true copy within the last 3 months.", req: true },
+      { id: "address", label: "Proof of residential address", hint: "Municipal or utility account, bank statement, lease or similar in your name, not older than 3 months.", req: true },
+      funds, other ];
+    if (t === "company") return [
+      { id: "cor", label: "CIPC registration certificate", hint: "CoR 14.3 (company) or CK1 / CK2 (close corporation).", req: true },
+      { id: "disclosure", label: "Current CIPC disclosure certificate", hint: "Shows the current directors or members. Not older than 3 months.", req: true },
+      { id: "ownership", label: "Share register or beneficial ownership register", hint: "Securities register, your CIPC beneficial ownership filing, or a signed ownership diagram showing everyone with 5% or more.", req: true },
+      { id: "resolution", label: "Resolution authorising the representative", hint: "Signed board or members' resolution authorising the representative to give instructions and sign.", req: true },
+      { id: "id_rep", label: "Certified ID of the representative", hint: "Certified within the last 3 months.", req: true },
+      { id: "id_people", label: "Certified IDs of the people listed under ownership and control", hint: "One file per person is fine — you can select several files at once.", req: true },
+      { id: "address", label: "Proof of business address", hint: "Municipal or utility account, bank statement or lease, not older than 3 months.", req: true },
+      funds, other ];
+    if (t === "trust") return [
+      { id: "deed", label: "Trust deed (with all amendments)", hint: "", req: true },
+      { id: "loa", label: "Master's letters of authority", hint: "The current letters showing who the trustees are.", req: true },
+      { id: "resolution", label: "Trustees' resolution authorising the representative", hint: "Signed by the trustees, authorising the representative to give instructions and sign.", req: true },
+      { id: "id_trustees", label: "Certified IDs of all trustees", hint: "Certified within the last 3 months. Select several files at once.", req: true },
+      { id: "id_people", label: "Certified IDs of the founder and named beneficiaries", hint: "Where available. Birth certificates for minor beneficiaries.", req: true },
+      { id: "address", label: "Proof of the trust's address", hint: "Not older than 3 months.", req: true },
+      funds, other ];
+    return [
+      { id: "agreement", label: "Partnership or joint venture agreement", hint: "", req: true },
+      { id: "resolution", label: "Authority for the representative", hint: "Signed by all partners, authorising the representative to give instructions and sign.", req: true },
+      { id: "id_people", label: "Certified IDs of all partners", hint: "For a partner that is a company or trust, its registration documents and its representative's ID.", req: true },
+      { id: "address", label: "Proof of business address", hint: "Not older than 3 months.", req: true },
+      funds, other ];
   }
 
-  // Use no-cors mode with form-encoded data to avoid CORS preflight issues
-  // with Google Apps Script
-  var formData = new FormData();
-  formData.append("payload", JSON.stringify(payload));
+  // ============================================================
+  //  STATE
+  // ============================================================
+  var S = {
+    phase: "loading",          // loading | form | sending | done | invalid
+    step: 0,
+    type: "",
+    f: {},                     // flat fields
+    people: [],                // entity ownership / control
+    uploads: {},               // slot -> [{name,type,size,data,orig}]
+    later: {},                 // slot -> true when client will provide later
+    busy: {},                  // slot -> processing
+    upMsg: {},                 // slot -> error text
+    errors: {},
+    token: "", walkIn: true, tokenVerified: false,
+    ref: "", clientName: "",
+    submissionId: "", submittedAt: "", submitError: "", restored: false
+  };
 
-  fetch(SCRIPT_URL, {
-    method: "POST",
-    body:   formData
-  })
-  .then(function() {
-    // no-cors means we can't read the response — assume success if no error
-    renderSuccess();
-  })
-  .catch(function() {
-    // Even on network error, try to show success since Apps Script
-    // often processes the request even when fetch throws
-    renderSuccess();
+  var $app = document.getElementById("app");
+
+  // ============================================================
+  //  HELPERS
+  // ============================================================
+  function esc(v) {
+    return String(v == null ? "" : v).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function val(k) { var v = S.f[k]; return v == null ? "" : String(v); }
+  function has(k) { return val(k).trim() !== ""; }
+  function isEntity() { return !!(TYPES[S.type] && TYPES[S.type].entity); }
+  function fmtSize(b) { return b >= MB ? (b / MB).toFixed(1) + " MB" : Math.max(1, Math.round(b / 1024)) + " KB"; }
+  function totalBytes() {
+    var n = 0; Object.keys(S.uploads).forEach(function (k) { S.uploads[k].forEach(function (u) { n += u.size; }); }); return n;
+  }
+  function today() { return new Date().toLocaleDateString("en-ZA", { day: "numeric", month: "long", year: "numeric" }); }
+  function nowStamp(d) {
+    d = d || new Date();
+    return d.toLocaleString("en-ZA", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false });
+  }
+  function makeSubmissionId() {
+    var d = new Date(), chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", r = "";
+    var a = new Uint8Array(5);
+    (window.crypto || window.msCrypto).getRandomValues(a);
+    for (var i = 0; i < a.length; i++) r += chars[a[i] % chars.length];
+    return "AH-" + d.getFullYear() + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0") + "-" + r;
+  }
+  function addressOf(prefix) {
+    return [val(prefix + "Street"), val(prefix + "Suburb"), val(prefix + "City"), val(prefix + "Province"), val(prefix + "Postal")]
+      .map(function (s) { return s.trim(); }).filter(Boolean).join(", ");
+  }
+  function clientDisplayName() {
+    return isEntity() ? val("entityName").trim() : (val("firstName") + " " + val("lastName")).trim();
+  }
+  function signerName() {
+    return isEntity() ? (val("repFirst") + " " + val("repLast")).trim() : (val("firstName") + " " + val("lastName")).trim();
+  }
+  function signerSurname() { return (isEntity() ? val("repLast") : val("lastName")).trim(); }
+
+  // South African ID: 13 digits, YYMMDD, Luhn check digit
+  function parseSAID(raw) {
+    var id = String(raw || "").replace(/\s+/g, "");
+    if (!/^\d{13}$/.test(id)) return null;
+    var sum = 0;
+    for (var i = 0; i < 13; i++) {
+      var d = +id[12 - i];
+      if (i % 2 === 1) { d *= 2; if (d > 9) d -= 9; }
+      sum += d;
+    }
+    if (sum % 10 !== 0) return null;
+    var yy = +id.substr(0, 2), mm = +id.substr(2, 2), dd = +id.substr(4, 2);
+    var cy = new Date().getFullYear() % 100;
+    var yyyy = (yy > cy ? 1900 : 2000) + yy;
+    var dt = new Date(yyyy, mm - 1, dd);
+    if (dt.getFullYear() !== yyyy || dt.getMonth() !== mm - 1 || dt.getDate() !== dd) return null;
+    return { dob: yyyy + "-" + String(mm).padStart(2, "0") + "-" + String(dd).padStart(2, "0"), citizen: id[10] === "0" ? "SA citizen" : "Permanent resident" };
+  }
+  function validEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(e).trim()); }
+  function validPhone(p) { var d = String(p).replace(/[^\d]/g, ""); return d.length >= 9 && d.length <= 15; }
+
+  // ============================================================
+  //  DRAFT (sessionStorage — cleared when the tab closes or on submit)
+  // ============================================================
+  function saveDraft() {
+    if (S.walkIn) return; // shared reception devices: never keep one client's details for the next
+    try {
+      sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ token: S.token, step: S.step, type: S.type, f: S.f, people: S.people, later: S.later }));
+    } catch (e) { /* storage unavailable — ignore */ }
+  }
+  function loadDraft() {
+    try {
+      if (S.walkIn) return false;
+      var d = JSON.parse(sessionStorage.getItem(DRAFT_KEY) || "null");
+      if (!d || d.token !== S.token) return false;
+      S.step = Math.min(d.step || 0, 4); S.type = d.type || S.type; S.f = d.f || {}; S.people = d.people || []; S.later = d.later || {};
+      return true;
+    } catch (e) { return false; }
+  }
+  function clearDraft() { try { sessionStorage.removeItem(DRAFT_KEY); } catch (e) {} }
+
+  // ============================================================
+  //  FIELD BUILDERS
+  // ============================================================
+  function lbl(text, req) { return esc(text) + (req ? '<span class="req" aria-hidden="true">*</span>' : '<span class="opt">(optional)</span>'); }
+
+  function fld(k, label, o) {
+    o = o || {};
+    var id = "f_" + k, err = S.errors[k], v = val(k), ctl;
+    var common = ' id="' + id + '" data-k="' + k + '"' + (o.re ? ' data-re="1"' : "") + (o.req ? ' aria-required="true"' : "") +
+      (err ? ' aria-invalid="true" aria-describedby="' + id + '_err"' : "");
+    if (o.type === "select") {
+      ctl = "<select" + common + '><option value="">Select…</option>' +
+        o.options.map(function (op) { return '<option value="' + esc(op) + '"' + (op === v ? " selected" : "") + ">" + esc(op) + "</option>"; }).join("") + "</select>";
+    } else if (o.type === "textarea") {
+      ctl = "<textarea" + common + ' rows="' + (o.rows || 3) + '" placeholder="' + esc(o.ph || "") + '" maxlength="' + (o.max || 3000) + '">' + esc(v) + "</textarea>";
+    } else {
+      ctl = '<input type="' + (o.type || "text") + '"' + common + ' value="' + esc(v) + '" placeholder="' + esc(o.ph || "") + '"' +
+        (o.ac ? ' autocomplete="' + o.ac + '"' : "") + (o.im ? ' inputmode="' + o.im + '"' : "") + ' maxlength="' + (o.max || 200) + '" />';
+    }
+    return '<div class="field' + (o.full ? " full" : "") + (err ? " has-error" : "") + '" data-field="' + k + '">' +
+      '<label for="' + id + '">' + lbl(label, o.req) + "</label>" +
+      (o.hint ? '<div class="hint">' + o.hint + "</div>" : "") + ctl +
+      (o.after || "") +
+      '<div class="err-msg" id="' + id + '_err">' + esc(err || "") + "</div></div>";
+  }
+
+  function radios(k, label, options, o) {
+    o = o || {};
+    var err = S.errors[k], v = val(k);
+    return '<div class="field' + (o.full ? " full" : "") + (err ? " has-error" : "") + '" data-field="' + k + '"><fieldset>' +
+      "<legend>" + lbl(label, o.req) + "</legend>" + (o.hint ? '<div class="hint">' + o.hint + "</div>" : "") +
+      '<div class="choice-group' + (o.inline ? " inline" : "") + '">' +
+      options.map(function (op) {
+        return '<label class="choice"><input type="radio" name="' + k + '" value="' + esc(op[0]) + '" data-k="' + k + '"' + (o.re !== false ? ' data-re="1"' : "") +
+          (v === op[0] ? " checked" : "") + " /><span><span class=\"choice-title\">" + esc(op[1]) + "</span>" +
+          (op[2] ? '<span class="choice-sub" style="display:block">' + esc(op[2]) + "</span>" : "") + "</span></label>";
+      }).join("") + '</div></fieldset><div class="err-msg">' + esc(err || "") + "</div></div>";
+  }
+
+  function check(k, html) {
+    var err = S.errors[k];
+    return '<div class="field' + (err ? " has-error" : "") + '" data-field="' + k + '"><label class="check"><input type="checkbox" data-k="' + k + '"' +
+      (S.f[k] === true ? " checked" : "") + " /><span>" + html + '</span></label><div class="err-msg">' + esc(err || "") + "</div></div>";
+  }
+
+  function addressBlock(prefix, title, req) {
+    return '<div class="grid">' +
+      fld(prefix + "Street", title + " — street address", { req: req, full: true, ph: "Unit, building, street number and name", ac: "address-line1" }) +
+      fld(prefix + "Suburb", "Suburb", { ph: "Suburb", ac: "address-line2" }) +
+      fld(prefix + "City", "City / town", { req: req, ac: "address-level2" }) +
+      fld(prefix + "Province", "Province", { req: req, type: "select", options: PROVINCES }) +
+      fld(prefix + "Postal", "Postal code", { req: req, im: "numeric", max: 10, ac: "postal-code" }) +
+      "</div>";
+  }
+
+  // ============================================================
+  //  STEP RENDERERS
+  // ============================================================
+  function stepType() {
+    var hello = S.clientName ? "Welcome, " + esc(S.clientName) + "." : "Welcome.";
+    var err = S.errors.type;
+    return "<h1>" + hello + "</h1>" +
+      '<p class="lead">Before we can act for you, the Financial Intelligence Centre Act requires us to identify and verify every client. This takes about 10 minutes.</p>' +
+      '<div class="card"><h2>Who is the client?</h2><p class="card-sub">Choose the person or entity that will instruct us and be responsible for our fees.</p>' +
+      '<div class="field' + (err ? " has-error" : "") + '" data-field="type"><fieldset><legend class="sr-only">Client type</legend><div class="choice-group type-grid">' +
+      Object.keys(TYPES).map(function (k) {
+        var t = TYPES[k];
+        return '<label class="choice"><input type="radio" name="ctype" value="' + k + '" data-type="1"' + (S.type === k ? " checked" : "") +
+          ' /><span><span class="choice-title">' + esc(t.label) + '</span><span class="choice-sub" style="display:block">' + esc(t.sub) + "</span></span></label>";
+      }).join("") + '</div></fieldset><div class="err-msg">' + esc(err || "") + "</div></div></div>" +
+      '<div class="card"><h2>What you will need</h2><p class="card-sub" style="margin:0">' + needList() + "</p></div>";
+  }
+
+  function needList() {
+    var t = S.type;
+    if (!t) return "Choose a client type above to see the documents you will need. You can also save the form on this device and come back to it in the same browser tab.";
+    var items = docSlots().filter(function (d) { return d.req; }).map(function (d) { return "• " + esc(d.label); });
+    items.push("• Details of the matter you need help with");
+    return items.join("<br />");
+  }
+
+  function stepDetails() {
+    var t = S.type, h = "";
+    if (t === "individual") {
+      var foreign = val("citizenship") === "foreign";
+      var idInfo = parseSAID(val("idNumber"));
+      h += '<div class="card"><h2>Your personal details</h2><p class="card-sub">As they appear on your identity document.</p><div class="grid">' +
+        fld("firstName", "First names", { req: true, ac: "given-name", ph: "All first names" }) +
+        fld("lastName", "Surname", { req: true, ac: "family-name" }) +
+        radios("citizenship", "Citizenship", [["sa", "South African ID holder", "Citizen or permanent resident"], ["foreign", "Foreign national", "Identified by passport"]], { req: true, full: true, inline: true }) +
+        (foreign
+          ? fld("passportNumber", "Passport number", { req: true }) + fld("nationality", "Nationality / country of issue", { req: true, ph: "e.g. Zimbabwe" })
+          : fld("idNumber", "South African ID number", { req: true, im: "numeric", max: 16, ph: "13 digits",
+              after: idInfo ? '<div class="ok-msg">✓ Valid ID number · ' + esc(idInfo.citizen) + "</div>" : "" })) +
+        fld("dob", "Date of birth", { req: true, type: "date" }) +
+        fld("occupation", "Occupation", { req: true, ph: "e.g. Engineer, business owner, pensioner" }) +
+        fld("employer", "Employer or business name", { ph: "If employed or self-employed" }) +
+        "</div></div>" +
+        '<div class="card"><h2>Residential address</h2><p class="card-sub">Where you live — not a postal address.</p>' + addressBlock("addr", "Residential address", true) + "</div>";
+    } else {
+      var T = TYPES[t];
+      h += '<div class="card"><h2>' + esc(T.label) + ' details</h2><p class="card-sub">As registered with ' + (t === "trust" ? "the Master of the High Court" : t === "company" ? "CIPC" : "the relevant authority, if any") + '.</p><div class="grid">' +
+        fld("entityName", T.nameLabel, { req: true, full: true, ph: t === "trust" ? "e.g. Sample Family Trust" : "e.g. Sample Holdings (Pty) Ltd" }) +
+        (t === "company" ? fld("tradingName", "Trading name", { ph: "If different" }) : "") +
+        fld("regNumber", T.regLabel, { req: T.regReq, ph: T.regPh }) +
+        (t === "trust"
+          ? fld("mastersOffice", "Master's office where registered", { req: true, ph: "e.g. Pretoria" }) +
+            fld("trustType", "Type of trust", { req: true, type: "select", options: ["Inter vivos trust", "Testamentary trust"] })
+          : "") +
+        (t !== "trust" ? fld("vat", "VAT number", { ph: "If registered for VAT", im: "numeric" }) : "") +
+        fld("natureOfBusiness", t === "trust" ? "Purpose or main activity of the trust" : "Nature of business", { req: true, full: true, ph: t === "trust" ? "e.g. holds the family home and investments" : "e.g. security services, civil construction" }) +
+        "</div></div>" +
+        '<div class="card"><h2>' + (t === "company" ? "Registered address" : "Physical address") + "</h2>" + addressBlock("addr", t === "company" ? "Registered address" : "Address", true) +
+        (t === "company" ? check("opSame", "The operating address is the same as the registered address") +
+          (S.f.opSame === true ? "" : fld("opAddress", "Operating address", { type: "textarea", rows: 2, ph: "Street, suburb, city, postal code" })) : "") +
+        "</div>" +
+        '<div class="card"><h2>Authorised representative</h2><p class="card-sub">The person who will give us instructions and sign the fee agreement on behalf of ' + esc(T.who) + '.</p><div class="grid">' +
+        fld("repFirst", "First names", { req: true, ac: "given-name" }) +
+        fld("repLast", "Surname", { req: true, ac: "family-name" }) +
+        fld("repId", "SA ID or passport number", { req: true }) +
+        fld("repCapacity", "Capacity", { req: true, ph: t === "trust" ? "e.g. Trustee" : t === "partnership" ? "e.g. Partner" : "e.g. Director" }) +
+        "</div></div>" + peopleBlock();
+    }
+    h += '<div class="card"><h2>Contact details</h2><p class="card-sub">We will use these to confirm receipt and communicate about the matter.</p><div class="grid">' +
+      fld("email", "Email address", { req: true, type: "email", ac: "email", ph: "name@example.com" }) +
+      fld("phone", "Mobile number", { req: true, type: "tel", ac: "tel", ph: "082 000 0000" }) +
+      fld("phone2", "Alternative number", { type: "tel", ph: "Office or landline" }) +
+      "</div></div>";
+    return "<h1>Details</h1><p class=\"lead\">Fields marked <span class=\"req\">*</span> are required.</p>" + h;
+  }
+
+  function peopleBlock() {
+    var t = S.type, roles = ROLES[t], err = S.errors.people;
+    if (!S.people.length) S.people.push({ name: "", idNo: "", roles: [], pct: "" });
+    var rows = S.people.map(function (p, i) {
+      var e = function (k) { return S.errors["p_" + i + "_" + k]; };
+      var input = function (k, label, ph, req) {
+        var er = e(k), id = "p_" + i + "_" + k;
+        return '<div class="field' + (er ? " has-error" : "") + '"><label for="' + id + '">' + lbl(label, req) + '</label><input type="text" id="' + id + '" data-pi="' + i + '" data-pk="' + k + '" value="' + esc(p[k] || "") + '" placeholder="' + esc(ph) + '" maxlength="120" /><div class="err-msg">' + esc(er || "") + "</div></div>";
+      };
+      var rErr = e("roles");
+      return '<div class="person"><div class="person-head"><span>Person ' + (i + 1) + "</span>" +
+        (S.people.length > 1 ? '<button type="button" class="linkbtn" data-act="delPerson" data-i="' + i + '">Remove</button>' : "") + "</div>" +
+        '<div class="grid">' + input("name", "Full name", "As on ID", true) + input("idNo", "ID or passport number", "Or registration no. if an entity", true) + "</div>" +
+        '<div class="field' + (rErr ? " has-error" : "") + '"><fieldset><legend>' + lbl("Role(s)", true) + '</legend><div class="roles">' +
+        roles.map(function (r) {
+          return '<label class="role"><input type="checkbox" data-pi="' + i + '" data-role="' + r[0] + '"' + (p.roles.indexOf(r[0]) > -1 ? " checked" : "") + " />" + esc(r[1]) + "</label>";
+        }).join("") + '</div></fieldset><div class="err-msg">' + esc(rErr || "") + "</div></div>" +
+        (t !== "trust" ? '<div class="grid">' + input("pct", t === "company" ? "% shareholding / interest" : "% share in partnership", "e.g. 40%", false) + "</div>" : "") +
+        "</div>";
+    }).join("");
+    return '<div class="card"><h2>Ownership and control</h2><p class="card-sub">' + esc(PEOPLE_INTRO[t]) + "</p>" +
+      (err ? '<div class="notice err">' + esc(err) + "</div>" : "") + rows +
+      '<button type="button" class="btn btn-sm" data-act="addPerson">+ Add another person</button>' +
+      (t === "trust" ? '<div style="margin-top:14px">' + fld("beneficiaryClass", "Beneficiaries described as a class", { type: "textarea", rows: 2, ph: "e.g. the descendants of the founder" }) + "</div>" : "") +
+      "</div>";
+  }
+
+  function stepMatter() {
+    var funds = val("trustFunds"), pep = val("pep"), other = val("actingForOther");
+    return "<h1>Your matter</h1><p class=\"lead\">This helps us check for conflicts of interest and meet our risk assessment duties under FICA.</p>" +
+      '<div class="card"><h2>What do you need help with?</h2><div class="grid">' +
+      fld("serviceType", "Type of matter", { req: true, type: "select", options: SERVICES, full: true }) +
+      fld("matterDesc", "Short description", { req: true, type: "textarea", full: true, rows: 4, ph: "In a few sentences: what has happened and what you would like us to do." }) +
+      fld("opposingParties", "Other parties involved", { type: "textarea", full: true, rows: 2, hint: "Names of the other side and anyone else involved — we use this for our conflict check.", ph: "e.g. City of Tshwane; ABC Construction (Pty) Ltd" }) +
+      "</div></div>" +
+      '<div class="card"><h2>Money passing through our trust account</h2>' +
+      radios("trustFunds", "Will you pay money into our trust account, or will we receive money on your behalf?", [["yes", "Yes"], ["no", "No"], ["unsure", "Not sure yet"]],
+        { req: true, inline: true, hint: "For example a purchase price, deposit, settlement amount or funds held in trust. Legal fees paid against our invoices do not count." }) +
+      (funds === "yes" || funds === "unsure"
+        ? '<div class="grid">' + fld("sourceOfFunds", "Where will the money come from?", { req: funds === "yes", type: "select", options: FUNDS }) +
+          fld("fundsAmount", "Approximate amount", { ph: "e.g. R 1 200 000", im: "decimal" }) +
+          fld("sourceDetails", "Details", { req: funds === "yes", type: "textarea", full: true, rows: 2, ph: "e.g. proceeds of the sale of Erf 123 Waterkloof, paid by ABC Bank" }) + "</div>"
+        : "") +
+      "</div>" +
+      '<div class="card"><h2>Prominent persons</h2>' +
+      radios("pep", isEntity()
+        ? "Is the representative, or any person listed under ownership and control, a prominent person — or a family member or known close associate of one?"
+        : "Are you a prominent person — or a family member or known close associate of one?",
+        [["no", "No"], ["yes", "Yes"], ["unsure", "Not sure"]], { req: true, inline: true }) +
+      '<details class="more"><summary>Who counts as a prominent person?</summary><div>Anyone who holds, or in the last 12 months held, a prominent public position in South Africa — for example a minister, deputy minister, premier, MEC, member of Parliament or a provincial legislature, mayor, municipal manager or CFO of a municipality, head or CFO of a government department, senior judge, ambassador, senior officer of the SANDF or SAPS, executive of a state-owned entity, leader of a political party, or a senior executive of a company that does significant business with the state. Senior public officials of foreign countries and international organisations also count. "Family member" includes a spouse or partner, parent, child, sibling and their spouses.</div></details>' +
+      (pep === "yes" || pep === "unsure" ? fld("pepDetails", "Please give details", { req: pep === "yes", type: "textarea", rows: 2, ph: "Name, position held, and relationship (if a family member or associate)" }) : "") +
+      "</div>" +
+      '<div class="card"><h2>Acting for someone else</h2>' +
+      radios("actingForOther", isEntity()
+        ? "Is " + TYPES[S.type].who + " acting on behalf of, or as a nominee for, another person?"
+        : "Are you acting on behalf of someone else in this matter?", [["no", "No"], ["yes", "Yes"]], { req: true, inline: true }) +
+      (other === "yes" ? fld("actingForDetails", "On whose behalf, and in what capacity?", { req: true, type: "textarea", rows: 2 }) : "") +
+      "</div>";
+  }
+
+  function stepDocs() {
+    var slots = docSlots(), used = totalBytes(), cap = CONFIG.MAX_TOTAL_MB * MB;
+    var items = slots.map(function (d) {
+      var files = S.uploads[d.id] || [], err = S.errors["doc_" + d.id], busy = S.busy[d.id], msg = S.upMsg[d.id];
+      var fileHtml = files.map(function (u, i) {
+        return '<div class="file"><span aria-hidden="true">✓</span><span class="fname" title="' + esc(u.name) + '">' + esc(u.name) + '</span><span class="fsize">' + fmtSize(u.size) +
+          '</span><button type="button" class="btn-x" data-act="delFile" data-slot="' + d.id + '" data-i="' + i + '" aria-label="Remove ' + esc(u.name) + '">Remove</button></div>';
+      }).join("");
+      return '<div class="doc' + (err ? " has-error" : "") + '" data-field="doc_' + d.id + '"><div class="doc-head"><div class="doc-title">' + lbl(d.label, d.req) + "</div></div>" +
+        (d.hint ? '<div class="hint" style="margin-top:2px">' + esc(d.hint) + "</div>" : "") + fileHtml +
+        (S.later[d.id] ? "" :
+          '<div class="drop">' + (busy ? '<div class="spinner" style="width:22px;height:22px;margin:0 auto 6px"></div>Preparing file…' :
+            '<input type="file" multiple accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" data-slot="' + d.id + '" aria-label="Upload: ' + esc(d.label) + '" />' +
+            "<strong>" + (files.length ? "Add another file" : "Choose a file or take a photo") + "</strong><br />PDF, JPG or PNG · up to " + CONFIG.MAX_FILE_MB + " MB each") + "</div>") +
+        (msg ? '<div class="err-msg" style="display:block">' + esc(msg) + "</div>" : "") +
+        (d.req && !files.length ? '<label class="later"><input type="checkbox" data-later="' + d.id + '"' + (S.later[d.id] ? " checked" : "") + " /> I don't have this now — I'll send it to the firm later</label>" : "") +
+        '<div class="err-msg">' + esc(err || "") + "</div></div>";
+    }).join("");
+    var pct = Math.min(100, Math.round(used / cap * 100));
+    return "<h1>Documents</h1><p class=\"lead\">Upload clear, complete copies. On a phone you can take a photo of each page.</p>" +
+      '<div class="notice">Certified copies must be certified as true copies by a commissioner of oaths (for example at a police station or by an attorney) within the last 3 months.</div>' +
+      '<div class="card">' + items +
+      '<div class="meter">Total attached: ' + fmtSize(used) + " of " + CONFIG.MAX_TOTAL_MB + ' MB<div class="track"><span style="width:' + pct + '%"></span></div></div></div>';
+  }
+
+  function agreementHtml(forReceipt) {
+    var hl = forReceipt ? "" : ' class="hl"';
+    return '<h3>FEE AGREEMENT</h3>' +
+      "<h4>1. RESPONSIBILITY</h4><p>In this matter, Albert Hibbert will bear overall responsibility. Please contact Albert at any time should you have any queries. His contact number is 012 346 4633.</p>" +
+      "<h4>2. FEES AND BILLING</h4><p>Our fees are calculated on an hourly basis in respect of time which is expended on the matter. The approximate hourly rates of the professionals who will work on your file are currently as follows:</p>" +
+      '<table class="rates"><thead><tr><th>Professional</th><th>Standard rate</th><th>High rate</th></tr></thead><tbody>' +
+      "<tr><td>Albert Hibbert</td><td>R4 400.00 per hour</td><td>R5 000.00 per hour</td></tr>" +
+      "<tr><td>Jaco du Plooy</td><td>R3 300.00 per hour</td><td>R3 600.00 per hour</td></tr>" +
+      "<tr><td>Mikhael Venter</td><td>R2 300.00 per hour</td><td>R2 600.00 per hour</td></tr>" +
+      "<tr><td>Second Year Candidate Legal Practitioner</td><td>R1 600.00 per hour</td><td>R1 800.00 per hour</td></tr>" +
+      "<tr><td>First Year Candidate Legal Practitioner</td><td>R1 300.00 per hour</td><td>R1 500.00 per hour</td></tr></tbody></table>" +
+      "<p>We charge the high rate for work which requires excessive overtime, or for work which is requested on an urgent basis. Time spent travelling on your behalf will be charged at the standard hourly rate quoted above, save for exceptional circumstances when travelling charges should be discussed with us in advance.</p>" +
+      "<p>Disbursements such as national and international telephone calls, telefax charges, copying and print charges, stamp duty, counsel's fees, correspondent's fees, etc. and out-of-pocket costs, incurred in the performance of our mandate, are charged separately. We will require you to reimburse any substantial expenses such as hotel accommodation and airfares to be incurred during trips out of town on your behalf.</p>" +
+      "<p>We shall charge Value-Added Tax at the standard rate (presently 15%) on all our invoices. The above rates exclude any such VAT.</p>" +
+      "<p>We shall submit invoices to you at regular intervals, most likely once every month. On finalisation of the matter, we shall submit a final invoice. Invoices are payable on presentation, and we should like to request payment within 7 days of receipt.</p>" +
+      "<h4>3. ADJUSTMENT OF RATES</h4><p>The rates stipulated herein are subject to change and reviewed annually. These changes may be effected without prior notice.</p>" +
+      "<h4>4. COMMUNICATION</h4><p>Written correspondence and draft documents will be transmitted to you by telefax or by electronic mail (e-mail), unless otherwise requested. We caution that, as these media are open to abuse by third parties, we cannot accept responsibility for breaches of confidentiality arising from their use. Documents sent by e-mail must also be treated with caution and not be relied upon as final, as persons other than ourselves may make amendments thereto without our knowledge and approval.</p>" +
+      "<h4>5. GOVERNING LAW</h4><p>Our contractual relationship will be governed by the laws of the Republic of South Africa.</p>" +
+      "<h4>6. CONFIDENTIALITY</h4><p>The contents of this letter are confidential and may not be disclosed to or relied upon by any person other than yourselves.</p>" +
+      "<h4>7. TERMINATION OF MANDATE</h4><p>You are entitled to terminate our mandate at any time by notice in writing to us. We reserve the right to terminate our mandate should a conflict of interest arise, should payment which is due to us not be made, or should we be unable to obtain full and proper instructions. Upon termination of our mandate, we will submit a final account for the work done by us to that date, and would expect payment before we release our work-product to you.</p>" +
+      "<h4>8. LIMITATION OF LIABILITY</h4><p" + hl + ">Any liability which we may incur in respect of any claim or claims arising from any work performed or opinions expressed in pursuance of or in connection with our mandate herein set out, shall be limited in aggregate to an amount of R 2 000 000.00.</p>" +
+      "<h4>9. FICA INFORMATION</h4><p>In terms of the Financial Intelligence Centre Act of 2001, we are also obliged to maintain certain general records in respect of our clients.</p>" +
+      "<h4>10. ACCEPTANCE</h4><p>We trust that our terms are acceptable to you. By signing below, you confirm your acceptance of the above fee agreement and authorise Albert Hibbert Inc Attorneys to act on your behalf on the terms set out herein.</p>";
+  }
+
+  function signatureMeta() {
+    var parts = ["Signed electronically by " + (signerName() || "—")];
+    if (isEntity()) parts.push("as " + (val("repCapacity") || "authorised representative") + " of " + (val("entityName") || "the client"));
+    parts.push("on " + today());
+    return parts.join(" ");
+  }
+
+  function stepFee() {
+    var ent = isEntity();
+    return "<h1>Fee agreement</h1><p class=\"lead\">Please read the agreement in full. It sets out how we charge for our work.</p>" +
+      '<div class="card"><div class="agreement" tabindex="0" aria-label="Fee agreement text">' + agreementHtml(false) + "</div>" +
+      '<p style="font-size:13px;margin:10px 0 0"><a href="' + esc(CONFIG.AGREEMENT_PDF) + '" target="_blank" rel="noopener">Download the fee agreement (PDF)</a> · Agreement version ' + esc(CONFIG.AGREEMENT_VERSION) + "</p></div>" +
+      '<div class="card"><h2>Acceptance</h2><p class="card-sub">' + (ent ? "To be completed by the authorised representative." : "") + "</p>" +
+      check("ackRead", "I have read the fee agreement above, including the hourly rates, the high rate for urgent work, and how disbursements and travel are charged.") +
+      check("ackLiability", "<strong>Limitation of liability.</strong> I specifically acknowledge clause 8: the firm's liability for any claim or claims arising from this mandate is limited in aggregate to <strong>R 2 000 000.00</strong>.") +
+      (ent ? check("ackAuthorised", "I am duly authorised to sign this agreement on behalf of <strong>" + esc(val("entityName") || "the client") + "</strong> in my capacity as <strong>" + esc(val("repCapacity") || "authorised representative") + "</strong>.") : "") +
+      fld("feeSignature", "Electronic signature — type your full name", { req: true, ph: signerName() || "Your full name", ac: "name",
+        hint: "Type your name exactly as it appears on your ID (" + esc(signerName() || "as entered on the details step") + "). Your typed name is your electronic signature under the Electronic Communications and Transactions Act 25 of 2002." }) +
+      '<div class="sig-preview" aria-hidden="true"><div class="sig" id="sig-live">' + esc(val("feeSignature")) + '</div><div class="sig-meta">' + esc(signatureMeta()) + "</div></div>" +
+      "</div>";
+  }
+
+  function privacyNotice() {
+    return '<div class="privacy" tabindex="0" aria-label="Privacy notice">' +
+      "<p><strong>Privacy notice (Protection of Personal Information Act 4 of 2013, section 18)</strong></p>" +
+      "<p><strong>Who we are.</strong> Albert Hibbert Inc Attorneys, 231 Lange Street, Nieuw Muckleneuk, Pretoria, is the responsible party for the personal information you give us on this form.</p>" +
+      "<p><strong>Why we collect it.</strong> To identify and verify you — and, for an entity, its owners, controllers and representative — as the Financial Intelligence Centre Act 38 of 2001 requires; to check for conflicts of interest; and to take your instructions, conclude our fee agreement and provide legal services to you.</p>" +
+      "<p><strong>Is it compulsory?</strong> Yes. The identification and verification information is required by law. If it is not provided, we cannot accept or continue with your mandate.</p>" +
+      "<p><strong>Who receives it.</strong> Our attorneys and staff, and the service providers that host our systems (Google and Microsoft), which may store it on servers outside South Africa and process it only on our instructions. We disclose information to authorities such as the Financial Intelligence Centre only where the law requires it.</p>" +
+      "<p><strong>How long we keep it.</strong> FICA records are kept for at least five years after our relationship with you ends.</p>" +
+      "<p><strong>Your rights.</strong> You may ask to see your information and ask us to correct it. You may object to processing that is not required by law, and you may lodge a complaint with the Information Regulator (www.inforegulator.org.za). Contact us at " + esc(CONFIG.FIRM_EMAIL) + " or " + esc(CONFIG.FIRM_TEL) + ".</p>" +
+      "<p><strong>Information about other people.</strong> If you give us information about other people (for example directors, trustees, partners or beneficiaries), please make sure you are entitled to share it and let them know we have it.</p></div>";
+  }
+
+  function revSection(title, step, rows) {
+    rows = rows.filter(function (r) { return r[1] != null && String(r[1]).trim() !== ""; });
+    return '<div class="rev"><div class="rev-head"><span>' + esc(title) + '</span><button type="button" class="linkbtn" data-act="goto" data-step="' + step + '">Edit</button></div><dl>' +
+      rows.map(function (r) { return "<dt>" + esc(r[0]) + "</dt><dd>" + esc(r[1]) + "</dd>"; }).join("") + "</dl></div>";
+  }
+
+  function reviewRows() {
+    var t = S.type, out = [];
+    if (t === "individual") {
+      out.push(["Personal details", 1, [["Name", clientDisplayName()],
+        [val("citizenship") === "foreign" ? "Passport" : "ID number", val("citizenship") === "foreign" ? val("passportNumber") + " (" + val("nationality") + ")" : val("idNumber")],
+        ["Date of birth", val("dob")], ["Occupation", val("occupation")], ["Employer", val("employer")], ["Address", addressOf("addr")]]]);
+    } else {
+      out.push([TYPES[t].label, 1, [["Name", val("entityName")], ["Trading name", val("tradingName")], [TYPES[t].regLabel, val("regNumber")],
+        ["Master's office", val("mastersOffice")], ["Trust type", val("trustType")], ["VAT number", val("vat")], ["Business", val("natureOfBusiness")],
+        ["Address", addressOf("addr")], ["Operating address", t === "company" && S.f.opSame !== true ? val("opAddress") : ""],
+        ["Representative", signerName() + (has("repCapacity") ? " (" + val("repCapacity") + ")" : "")], ["Representative ID", val("repId")]]]);
+      out.push(["Ownership and control", 1, [["People", peopleText()], ["Class of beneficiaries", val("beneficiaryClass")]]]);
+    }
+    out.push(["Contact", 1, [["Email", val("email")], ["Mobile", val("phone")], ["Alternative", val("phone2")]]]);
+    out.push(["Matter", 2, [["Type", val("serviceType")], ["Description", val("matterDesc")], ["Other parties", val("opposingParties")],
+      ["Trust account funds", labelOf(val("trustFunds"))], ["Source of funds", [val("sourceOfFunds"), val("fundsAmount"), val("sourceDetails")].filter(Boolean).join(" · ")],
+      ["Prominent person", labelOf(val("pep")) + (has("pepDetails") ? " — " + val("pepDetails") : "")],
+      ["Acting for another", labelOf(val("actingForOther")) + (has("actingForDetails") ? " — " + val("actingForDetails") : "")]]]);
+    var docLines = docSlots().map(function (d) {
+      var n = (S.uploads[d.id] || []).length;
+      return [d.label, n ? n + " file" + (n > 1 ? "s" : "") : S.later[d.id] ? "To follow" : d.req ? "Missing" : "—"];
+    });
+    out.push(["Documents", 3, docLines]);
+    out.push(["Fee agreement", 4, [["Signed by", val("feeSignature")], ["Version", CONFIG.AGREEMENT_VERSION]]]);
+    return out;
+  }
+  function labelOf(v) { return { yes: "Yes", no: "No", unsure: "Not sure" }[v] || v; }
+
+  function stepReview() {
+    var outstanding = outstandingDocs();
+    return "<h1>Review and submit</h1><p class=\"lead\">Check your details. You can edit any section before submitting.</p>" +
+      (S.submitError ? '<div class="notice err" role="alert"><strong>Your submission did not go through.</strong> ' + esc(S.submitError) + " Nothing you entered has been lost — please check your connection and press <em>Try again</em>. If it keeps failing, call us on " + esc(CONFIG.FIRM_TEL) + ".</div>" : "") +
+      (outstanding.length ? '<div class="notice warn">You will still need to send us: <ul>' + outstanding.map(function (d) { return "<li>" + esc(d) + "</li>"; }).join("") + "</ul>We cannot finalise your onboarding until we have these.</div>" : "") +
+      '<div class="card">' + reviewRows().map(function (s) { return revSection(s[0], s[1], s[2]); }).join("") + "</div>" +
+      '<div class="card"><h2>Privacy and declaration</h2><p class="card-sub">Please read the notice, then confirm both statements.</p>' + privacyNotice() +
+      check("declTrue", "The information I have given is true, correct and complete, and the documents I have uploaded are authentic. I will tell the firm promptly if any of it changes.") +
+      check("declPrivacy", "I have read the privacy notice. Where I have given information about other people, I am entitled to share it.") +
+      "</div>";
+  }
+
+  function stepper() {
+    var pct = Math.round((S.step + 1) / STEPS.length * 100);
+    return '<nav class="stepper" aria-label="Progress">' + STEPS.map(function (s, i) {
+      var cls = i < S.step ? "done" : i === S.step ? "active" : "";
+      var inner = '<span class="dot">' + (i < S.step ? "✓" : i + 1) + "</span>" + esc(s);
+      return '<div class="stp ' + cls + '"' + (i === S.step ? ' aria-current="step"' : "") + ">" +
+        (i < S.step ? '<button type="button" data-act="goto" data-step="' + i + '" aria-label="Go back to ' + esc(s) + '">' + inner + "</button>" : inner) + "</div>";
+    }).join("") + "</nav>" +
+      '<div class="bar" aria-hidden="true"><span style="width:' + pct + '%"></span></div>' +
+      '<p class="step-compact">Step ' + (S.step + 1) + " of " + STEPS.length + " · <strong>" + esc(STEPS[S.step]) + "</strong></p>";
+  }
+
+  function navRow() {
+    var last = S.step === STEPS.length - 1, sending = S.phase === "sending";
+    return '<div class="nav">' +
+      (S.step > 0 ? '<button type="button" class="btn" data-act="back"' + (sending ? " disabled" : "") + ">← Back</button>" : "<span></span>") +
+      (last
+        ? '<button type="button" class="btn btn-red" data-act="submit"' + (sending ? " disabled" : "") + ">" + (sending ? "Sending… please keep this page open" : S.submitError ? "Try again" : "Submit") + "</button>"
+        : '<button type="button" class="btn btn-primary" data-act="next">Continue →</button>') +
+      "</div>";
+  }
+
+  // ============================================================
+  //  MAIN RENDER
+  // ============================================================
+  function render() {
+    var ref = document.getElementById("mast-ref");
+    if (S.ref) { ref.hidden = false; ref.textContent = "Ref " + S.ref; } else ref.hidden = true;
+
+    if (S.phase === "loading") { $app.innerHTML = '<div class="card center"><div class="spinner"></div>Checking your link…</div>'; return; }
+    if (S.phase === "invalid") {
+      $app.innerHTML = '<div class="card center"><div class="big-icon bad" aria-hidden="true">!</div><h1>This link is not available</h1><p class="lead">' + esc(S.invalidReason) +
+        "</p><p>Please contact us for a new link: " + esc(CONFIG.FIRM_TEL) + " · " + esc(CONFIG.FIRM_EMAIL) + "</p></div>";
+      return;
+    }
+    if (S.phase === "done") { $app.innerHTML = doneScreen(); return; }
+
+    var body = [stepType, stepDetails, stepMatter, stepDocs, stepFee, stepReview][S.step]();
+    var errCount = Object.keys(S.errors).length;
+    $app.innerHTML = stepper() +
+      (S.restored ? '<div class="notice ok">We restored the details you entered earlier in this browser tab. Documents need to be attached again.</div>' : "") +
+      (errCount ? '<div class="notice err" role="alert" id="err-banner">Please correct the ' + (errCount === 1 ? "highlighted field" : errCount + " highlighted fields") + " below.</div>" : "") +
+      body + navRow();
+  }
+
+  function doneScreen() {
+    var out = outstandingDocs();
+    return '<div class="card center"><div class="big-icon ok" aria-hidden="true">✓</div><h1>Thank you — we have your details</h1>' +
+      '<p class="lead">' + esc(CONFIG.FIRM) + " will verify your information and documents and contact you, usually within 2 business days.</p>" +
+      '<div class="receipt"><div><span>Submission ID</span><span>' + esc(S.submissionId) + "</span></div>" +
+      (S.ref ? "<div><span>Matter reference</span><span>" + esc(S.ref) + "</span></div>" : "") +
+      "<div><span>Client</span><span>" + esc(clientDisplayName()) + "</span></div>" +
+      "<div><span>Submitted</span><span>" + esc(S.submittedAt) + "</span></div>" +
+      '<div><span>Status</span><span style="color:var(--warn)">Pending verification</span></div></div>' +
+      (out.length ? '<div class="notice warn" style="text-align:left">Still to send: ' + esc(out.join("; ")) + ". Please email these to " + esc(CONFIG.FIRM_EMAIL) + " quoting your submission ID.</div>" : "") +
+      '<p style="font-size:13px;color:var(--muted)">Keep a copy of your signed fee agreement and the details you submitted.</p>' +
+      '<button type="button" class="btn btn-primary" data-act="receipt">Download my copy</button></div>';
+  }
+
+  // ============================================================
+  //  VALIDATION
+  // ============================================================
+  function validate(step) {
+    var e = {}, t = S.type;
+    function need(k, m) { if (!has(k)) e[k] = m || "This field is required."; }
+    if (step === 0 && !t) e.type = "Please choose the type of client.";
+    if (step === 1) {
+      if (t === "individual") {
+        need("firstName"); need("lastName"); need("citizenship", "Please choose one.");
+        if (val("citizenship") === "foreign") { need("passportNumber"); need("nationality"); }
+        else if (val("citizenship") === "sa") {
+          if (!has("idNumber")) e.idNumber = "This field is required.";
+          else if (!parseSAID(val("idNumber"))) e.idNumber = "This is not a valid South African ID number — please check the digits.";
+        }
+        need("dob");
+        var p = parseSAID(val("idNumber"));
+        if (val("citizenship") === "sa" && p && has("dob") && p.dob !== val("dob")) e.dob = "This does not match the date of birth in your ID number (" + p.dob + ").";
+        need("occupation");
+      } else {
+        need("entityName");
+        if (TYPES[t].regReq) need("regNumber");
+        if (t === "trust") { need("mastersOffice"); need("trustType"); }
+        need("natureOfBusiness");
+        need("repFirst"); need("repLast"); need("repId"); need("repCapacity");
+        var filled = S.people.filter(function (x) { return (x.name || "").trim() || (x.idNo || "").trim(); });
+        if (!filled.length) e.people = "Please list at least one person.";
+        S.people.forEach(function (x, i) {
+          var any = (x.name || "").trim() || (x.idNo || "").trim() || x.roles.length;
+          if (!any && S.people.length > 1) return;
+          if (!(x.name || "").trim()) e["p_" + i + "_name"] = "Required.";
+          if (!(x.idNo || "").trim()) e["p_" + i + "_idNo"] = "Required.";
+          if (!x.roles.length) e["p_" + i + "_roles"] = "Choose at least one role.";
+        });
+      }
+      need("addrStreet"); need("addrCity"); need("addrProvince"); need("addrPostal");
+      if (!has("email")) e.email = "This field is required."; else if (!validEmail(val("email"))) e.email = "Please enter a valid email address.";
+      if (!has("phone")) e.phone = "This field is required."; else if (!validPhone(val("phone"))) e.phone = "Please enter a valid phone number.";
+    }
+    if (step === 2) {
+      need("serviceType"); need("matterDesc"); need("trustFunds", "Please choose one.");
+      if (val("trustFunds") === "yes") { need("sourceOfFunds"); need("sourceDetails"); }
+      need("pep", "Please choose one."); if (val("pep") === "yes") need("pepDetails");
+      need("actingForOther", "Please choose one."); if (val("actingForOther") === "yes") need("actingForDetails");
+    }
+    if (step === 3) {
+      docSlots().forEach(function (d) {
+        if (d.req && !(S.uploads[d.id] || []).length && !S.later[d.id]) e["doc_" + d.id] = "Please upload this document, or tick that you will send it later.";
+      });
+    }
+    if (step === 4) {
+      if (S.f.ackRead !== true) e.ackRead = "Please confirm that you have read the agreement.";
+      if (S.f.ackLiability !== true) e.ackLiability = "Please acknowledge clause 8.";
+      if (isEntity() && S.f.ackAuthorised !== true) e.ackAuthorised = "Please confirm your authority to sign.";
+      var sig = val("feeSignature").trim(), sur = signerSurname().toLowerCase();
+      if (sig.length < 4) e.feeSignature = "Please type your full name.";
+      else if (sur && sig.toLowerCase().indexOf(sur) === -1) e.feeSignature = "Your signature must include your surname (" + signerSurname() + ").";
+    }
+    if (step === 5) {
+      if (S.f.declTrue !== true) e.declTrue = "Please confirm this declaration.";
+      if (S.f.declPrivacy !== true) e.declPrivacy = "Please confirm this statement.";
+    }
+    return e;
+  }
+
+  function outstandingDocs() {
+    if (!S.type) return [];
+    return docSlots().filter(function (d) { return d.req && !(S.uploads[d.id] || []).length; }).map(function (d) { return d.label; });
+  }
+
+  function focusFirstError() {
+    var el = $app.querySelector(".has-error input, .has-error select, .has-error textarea");
+    if (el) { el.focus({ preventScroll: true }); el.scrollIntoView({ behavior: "smooth", block: "center" }); }
+  }
+
+  function go(step) {
+    S.step = step; S.errors = {}; S.restored = false; saveDraft(); render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    var h = $app.querySelector("h1"); if (h) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
+  }
+
+  function next() {
+    var e = validate(S.step);
+    S.errors = e;
+    if (Object.keys(e).length) { render(); focusFirstError(); return; }
+    go(S.step + 1);
+  }
+
+  // ============================================================
+  //  FILES
+  // ============================================================
+  function readAsBase64(blob) {
+    return new Promise(function (res, rej) {
+      var r = new FileReader();
+      r.onload = function () { res(String(r.result).split(",")[1] || ""); };
+      r.onerror = function () { rej(r.error); };
+      r.readAsDataURL(blob);
+    });
+  }
+  function loadImage(file) {
+    if (window.createImageBitmap) return createImageBitmap(file, { imageOrientation: "from-image" }).catch(function () { return createImageBitmap(file); });
+    return new Promise(function (res, rej) {
+      var img = new Image(), url = URL.createObjectURL(file);
+      img.onload = function () { URL.revokeObjectURL(url); res(img); };
+      img.onerror = rej; img.src = url;
+    });
+  }
+  function compressImage(file) {
+    return loadImage(file).then(function (img) {
+      var w = img.width, h = img.height, max = CONFIG.IMAGE_MAX_PX, s = Math.min(1, max / Math.max(w, h));
+      var c = document.createElement("canvas"); c.width = Math.round(w * s); c.height = Math.round(h * s);
+      var ctx = c.getContext("2d"); ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height); ctx.drawImage(img, 0, 0, c.width, c.height);
+      return new Promise(function (res) { c.toBlob(function (b) { res(b); }, "image/jpeg", 0.85); });
+    });
+  }
+  function addFiles(slot, list) {
+    var files = Array.prototype.slice.call(list || []);
+    if (!files.length) return;
+    S.busy[slot] = true; S.upMsg[slot] = ""; render();
+    var problems = [];
+    var chain = Promise.resolve();
+    files.forEach(function (file) {
+      chain = chain.then(function () {
+        var isPdf = file.type === "application/pdf" || /\.pdf$/i.test(file.name);
+        var isImg = /^image\/(jpeg|png)$/.test(file.type) || /\.(jpe?g|png)$/i.test(file.name);
+        if (!isPdf && !isImg) { problems.push(file.name + ": only PDF, JPG or PNG files are accepted."); return; }
+        var type = isPdf ? "application/pdf" : (file.type || (/\.png$/i.test(file.name) ? "image/png" : "image/jpeg"));
+        var p = Promise.resolve({ blob: file, name: file.name, type: type });
+        if (isImg && file.size > CONFIG.COMPRESS_OVER_MB * MB) {
+          p = compressImage(file).then(function (b) {
+            if (b && b.size < file.size) return { blob: b, name: file.name.replace(/\.[^.]+$/, "") + ".jpg", type: "image/jpeg" };
+            return { blob: file, name: file.name, type: type };
+          }).catch(function () { return { blob: file, name: file.name, type: type }; });
+        }
+        return p.then(function (r) {
+          if (r.blob.size > CONFIG.MAX_FILE_MB * MB) { problems.push(file.name + " is larger than " + CONFIG.MAX_FILE_MB + " MB. Please upload a smaller copy or scan."); return; }
+          if (totalBytes() + r.blob.size > CONFIG.MAX_TOTAL_MB * MB) { problems.push(file.name + ": the total of all files may not exceed " + CONFIG.MAX_TOTAL_MB + " MB. Please email larger documents to " + CONFIG.FIRM_EMAIL + "."); return; }
+          return readAsBase64(r.blob).then(function (data) {
+            (S.uploads[slot] = S.uploads[slot] || []).push({ name: r.name, orig: file.name, type: r.type, size: r.blob.size, data: data });
+          });
+        });
+      }).catch(function () { problems.push(file.name + " could not be read. Please try again."); });
+    });
+    chain.then(function () {
+      S.busy[slot] = false; S.upMsg[slot] = problems.join(" ");
+      if ((S.uploads[slot] || []).length) { S.later[slot] = false; delete S.errors["doc_" + slot]; }
+      render();
+    });
+  }
+
+  // ============================================================
+  //  PAYLOAD
+  // ============================================================
+  function peopleText() {
+    var roles = ROLES[S.type] || [];
+    return S.people.filter(function (p) { return (p.name || "").trim(); }).map(function (p) {
+      var r = p.roles.map(function (k) { var f = roles.filter(function (x) { return x[0] === k; })[0]; return f ? f[1] : k; }).join(", ");
+      return [p.name.trim(), (p.idNo || "").trim(), r, (p.pct || "").trim()].filter(Boolean).join(" — ");
+    }).join("\n");
+  }
+
+  function summaryText() {
+    var lines = ["CLIENT ONBOARDING — " + CONFIG.FIRM, "Submission ID: " + S.submissionId, "Submitted: " + S.submittedAt,
+      "Link: " + (S.walkIn ? "Reception / walk-in (no token)" : "Token " + (S.tokenVerified ? "verified" : "NOT verified") + (S.ref ? " · Ref " + S.ref : "")),
+      "Client type: " + TYPES[S.type].label, ""];
+    reviewRows().forEach(function (s) {
+      lines.push(s[0].toUpperCase());
+      s[2].forEach(function (r) { if (r[1] != null && String(r[1]).trim()) lines.push("  " + r[0] + ": " + String(r[1]).replace(/\n/g, "\n    ")); });
+      lines.push("");
+    });
+    lines.push("FEE AGREEMENT " + CONFIG.AGREEMENT_VERSION + ": accepted; clause 8 (R2m liability cap) specifically acknowledged" + (isEntity() ? "; signatory confirmed authority" : ""));
+    lines.push("Signature: " + val("feeSignature") + " — " + signatureMeta());
+    lines.push("Declarations: information true and correct; privacy notice read.");
+    return lines.join("\n");
+  }
+
+  function buildPayload() {
+    var f = S.f, ent = isEntity(), t = S.type, now = new Date();
+    var docs = [];
+    docSlots().forEach(function (d) {
+      (S.uploads[d.id] || []).forEach(function (u, i) {
+        var label = d.label.replace(/[^\w\s-]/g, "").replace(/\s+/g, "_");
+        docs.push({ name: label + (S.uploads[d.id].length > 1 ? "_" + (i + 1) : "") + "__" + u.name, type: u.type, data: u.data, category: d.id, originalName: u.orig });
+      });
+    });
+    var fullAddress = addressOf("addr");
+    var individualId = f.citizenship === "foreign" ? val("passportNumber") : val("idNumber");
+    return {
+      // ---- fields the existing Apps Script already reads (unchanged names) ----
+      action: "submit_fica",
+      token: S.token,
+      clientType: t,
+      firstName: ent ? "" : val("firstName").trim(),
+      lastName: ent ? "" : val("lastName").trim(),
+      entityName: ent ? val("entityName").trim() : "",
+      email: val("email").trim(),
+      phone: val("phone").trim(),
+      idNumber: ent ? val("regNumber").trim() : individualId.trim(),
+      regNumber: ent ? val("regNumber").trim() : "",
+      address: fullAddress,
+      regAddress: ent ? fullAddress : "",
+      occupation: ent ? val("repCapacity").trim() : val("occupation").trim(),
+      repTitle: ent ? val("repCapacity").trim() : "",
+      beneficialOwners: ent ? peopleText() : "",
+      feeSignature: val("feeSignature").trim(),
+      feeSignedDate: now.toLocaleDateString("en-ZA"),
+      documents: docs,
+
+      // ---- new in v2 ----
+      formVersion: CONFIG.FORM_VERSION,
+      submissionId: S.submissionId,
+      submittedAtISO: now.toISOString(),
+      submittedAtLocal: S.submittedAt,
+      walkIn: S.walkIn,
+      tokenVerified: S.tokenVerified,
+      matterRef: S.ref,
+      clientDisplayName: clientDisplayName(),
+      individual: ent ? null : {
+        citizenship: f.citizenship === "foreign" ? "Foreign national" : (parseSAID(val("idNumber")) || {}).citizen || "SA ID holder",
+        idNumber: f.citizenship === "foreign" ? "" : val("idNumber").trim(),
+        passportNumber: f.citizenship === "foreign" ? val("passportNumber").trim() : "",
+        nationality: f.citizenship === "foreign" ? val("nationality").trim() : "South Africa",
+        dateOfBirth: val("dob"), occupation: val("occupation").trim(), employer: val("employer").trim()
+      },
+      entity: ent ? {
+        name: val("entityName").trim(), tradingName: val("tradingName").trim(), registrationNumber: val("regNumber").trim(),
+        mastersOffice: val("mastersOffice").trim(), trustType: val("trustType"), vatNumber: val("vat").trim(),
+        natureOfBusiness: val("natureOfBusiness").trim(),
+        operatingAddress: t === "company" ? (f.opSame === true ? fullAddress : val("opAddress").trim()) : "",
+        beneficiaryClass: val("beneficiaryClass").trim()
+      } : null,
+      representative: ent ? { firstName: val("repFirst").trim(), lastName: val("repLast").trim(), idNumber: val("repId").trim(), capacity: val("repCapacity").trim() } : null,
+      repFirstName: ent ? val("repFirst").trim() : "",
+      repLastName: ent ? val("repLast").trim() : "",
+      repIdNumber: ent ? val("repId").trim() : "",
+      people: ent ? S.people.filter(function (p) { return (p.name || "").trim(); }).map(function (p) { return { name: p.name.trim(), idNumber: (p.idNo || "").trim(), roles: p.roles.slice(), percentage: (p.pct || "").trim() }; }) : [],
+      addressParts: { street: val("addrStreet"), suburb: val("addrSuburb"), city: val("addrCity"), province: val("addrProvince"), postalCode: val("addrPostal") },
+      phone2: val("phone2").trim(),
+      matter: { type: val("serviceType"), description: val("matterDesc").trim(), otherParties: val("opposingParties").trim() },
+      risk: {
+        trustAccountFunds: val("trustFunds"), sourceOfFunds: val("sourceOfFunds"), fundsAmount: val("fundsAmount").trim(), sourceDetails: val("sourceDetails").trim(),
+        prominentPerson: val("pep"), prominentPersonDetails: val("pepDetails").trim(),
+        actingForAnother: val("actingForOther"), actingForDetails: val("actingForDetails").trim()
+      },
+      outstandingDocuments: outstandingDocs(),
+      feeAgreement: {
+        version: CONFIG.AGREEMENT_VERSION, signature: val("feeSignature").trim(), signedAtISO: now.toISOString(),
+        signatoryName: signerName(), signatoryCapacity: ent ? val("repCapacity").trim() : "Client in person",
+        acknowledgedRead: f.ackRead === true, acknowledgedLiabilityCap: f.ackLiability === true, confirmedAuthority: ent ? f.ackAuthorised === true : null
+      },
+      declarations: { truthful: f.declTrue === true, privacyNoticeRead: f.declPrivacy === true },
+      device: { userAgent: navigator.userAgent, language: navigator.language, timeZone: (Intl.DateTimeFormat().resolvedOptions() || {}).timeZone || "" },
+      summaryText: summaryText()
+    };
+  }
+
+  // ============================================================
+  //  SUBMIT
+  // ============================================================
+  function submit() {
+    var e = validate(5); S.errors = e;
+    if (Object.keys(e).length) { render(); focusFirstError(); return; }
+    // Re-check every earlier step in case something was cleared
+    for (var s = 0; s < 5; s++) {
+      var es = validate(s);
+      if (Object.keys(es).length) { S.step = s; S.errors = es; render(); focusFirstError(); return; }
+    }
+    if (!S.submissionId) S.submissionId = makeSubmissionId();   // kept on retry so the firm can de-duplicate
+    S.submittedAt = nowStamp();
+    S.phase = "sending"; S.submitError = ""; render();
+
+    var fd = new FormData();
+    fd.append("payload", JSON.stringify(buildPayload()));
+
+    var req = CONFIG.SERVER_CONFIRMS
+      ? fetch(CONFIG.SCRIPT_URL, { method: "POST", body: fd }).then(function (r) {
+          if (!r.ok) throw new Error("The server responded with an error (" + r.status + ").");
+          return r.text().then(function (txt) {
+            var d; try { d = JSON.parse(txt); } catch (x) { throw new Error("The server did not confirm receipt."); }
+            if (!(d && (d.ok === true || d.success === true || d.status === "success"))) throw new Error((d && (d.message || d.error)) || "The server did not confirm receipt.");
+          });
+        })
+      : fetch(CONFIG.SCRIPT_URL, { method: "POST", mode: "no-cors", body: fd }); // opaque response; rejects on network failure
+
+    var timeout = new Promise(function (_, rej) { setTimeout(function () { rej(new Error("The upload timed out.")); }, 180000); });
+
+    Promise.race([req, timeout]).then(function () {
+      S.phase = "done"; clearDraft(); render(); window.scrollTo({ top: 0, behavior: "smooth" });
+    }).catch(function (err) {
+      S.phase = "form"; S.submitError = (err && err.message && !/Failed to fetch|NetworkError|Load failed/i.test(err.message)) ? err.message : "We could not reach our server.";
+      render(); window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
+
+  function downloadReceipt() {
+    var html = "<!DOCTYPE html><html lang=\"en-ZA\"><head><meta charset=\"utf-8\"><title>Onboarding copy " + esc(S.submissionId) + "</title><style>" +
+      "body{font-family:Georgia,serif;max-width:760px;margin:30px auto;padding:0 20px;color:#141414;line-height:1.55;font-size:14px}h1,h2,h3{font-weight:400}h1{font-size:22px;border-bottom:3px solid #a4161a;padding-bottom:8px}" +
+      "h2{font-size:17px;margin-top:28px}h4{font-family:Arial,sans-serif;font-size:12px;letter-spacing:.05em;margin:14px 0 2px}pre{white-space:pre-wrap;font-family:Arial,sans-serif;font-size:12.5px;background:#f6f5f1;padding:14px;border:1px solid #ddd}" +
+      "table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px solid #ddd;padding:5px 7px;text-align:left}th{background:#141414;color:#fff}.sig{font-family:'Segoe Script','Brush Script MT',cursive;font-size:26px;color:#0d2a52}" +
+      "@media print{body{margin:0}}</style></head><body>" +
+      "<h1>ALBERT HIBBERT INC ATTORNEYS — client onboarding copy</h1>" +
+      "<p>Submission ID <strong>" + esc(S.submissionId) + "</strong> · Submitted " + esc(S.submittedAt) + (S.ref ? " · Ref " + esc(S.ref) : "") + "</p>" +
+      "<h2>Details submitted</h2><pre>" + esc(summaryText()) + "</pre>" +
+      "<h2>Fee agreement (version " + esc(CONFIG.AGREEMENT_VERSION) + ")</h2>" + agreementHtml(true) +
+      "<h2>Signature</h2><p class=\"sig\">" + esc(val("feeSignature")) + "</p><p>" + esc(signatureMeta()) + ", in terms of the Electronic Communications and Transactions Act 25 of 2002.</p>" +
+      "<p style=\"font-size:12px;color:#666\">This is a copy for your records generated on your device. Albert Hibbert Inc Attorneys · 231 Lange Street, Nieuw Muckleneuk, Pretoria · 012 346 4633</p></body></html>";
+    var blob = new Blob([html], { type: "text/html" }), a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = "Albert-Hibbert-onboarding-" + S.submissionId + ".html";
+    document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }
+
+  // ============================================================
+  //  EVENTS (delegated)
+  // ============================================================
+  function onField(e) {
+    var el = e.target;
+    if (el.dataset.type && e.type === "change") {
+      S.type = el.value; S.errors = {}; S.people = []; saveDraft(); render(); return;
+    }
+    if (el.dataset.k) {
+      var k = el.dataset.k;
+      S.f[k] = el.type === "checkbox" ? el.checked : el.value;
+      if (S.errors[k]) {
+        delete S.errors[k];
+        var w = $app.querySelector('[data-field="' + k + '"]'); if (w) w.classList.remove("has-error");
+        if (!Object.keys(S.errors).length) { var bn = document.getElementById("err-banner"); if (bn) bn.remove(); }
+      }
+      if (k === "idNumber") {
+        var p = parseSAID(el.value), dob = document.getElementById("f_dob");
+        if (p && !has("dob")) { S.f.dob = p.dob; if (dob) dob.value = p.dob; }
+      }
+      if (k === "feeSignature") { var s = document.getElementById("sig-live"); if (s) s.textContent = el.value; }
+      saveDraft();
+      if ((el.dataset.re || el.type === "checkbox" && k === "opSame") && e.type === "change") {
+        var active = document.activeElement && document.activeElement.id;
+        render();
+        if (active && document.getElementById(active)) document.getElementById(active).focus();
+      }
+      return;
+    }
+    if (el.dataset.pi !== undefined) {
+      var person = S.people[+el.dataset.pi]; if (!person) return;
+      if (el.dataset.role) {
+        var r = el.dataset.role, i = person.roles.indexOf(r);
+        if (el.checked && i === -1) person.roles.push(r); if (!el.checked && i > -1) person.roles.splice(i, 1);
+      } else person[el.dataset.pk] = el.value;
+      saveDraft(); return;
+    }
+    if (el.dataset.later && e.type === "change") { S.later[el.dataset.later] = el.checked; delete S.errors["doc_" + el.dataset.later]; saveDraft(); render(); return; }
+    if (el.type === "file" && el.dataset.slot && e.type === "change") { addFiles(el.dataset.slot, el.files); }
+  }
+  $app.addEventListener("input", onField);
+  $app.addEventListener("change", onField);
+
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-act]"); if (!b) return;
+    var a = b.dataset.act;
+    if (S.phase === "sending") return;
+    if (a === "next") next();
+    else if (a === "back") go(S.step - 1);
+    else if (a === "goto") go(+b.dataset.step);
+    else if (a === "submit") submit();
+    else if (a === "receipt") downloadReceipt();
+    else if (a === "addPerson") { S.people.push({ name: "", idNo: "", roles: [], pct: "" }); saveDraft(); render(); var ins = $app.querySelectorAll('[data-pk="name"]'); if (ins.length) ins[ins.length - 1].focus(); }
+    else if (a === "delPerson") { S.people.splice(+b.dataset.i, 1); S.errors = {}; saveDraft(); render(); }
+    else if (a === "delFile") { (S.uploads[b.dataset.slot] || []).splice(+b.dataset.i, 1); render(); }
+    else if (a === "clear") {
+      if (S.phase === "sending") return;
+      if (!window.confirm("Clear everything you have entered on this form?")) return;
+      clearDraft(); S.f = {}; S.people = []; S.uploads = {}; S.later = {}; S.errors = {}; S.step = 0; S.submitError = ""; S.submissionId = "";
+      S.type = S.prefType || ""; S.restored = false; S.phase = S.phase === "invalid" ? "invalid" : "form"; render(); window.scrollTo(0, 0);
+    }
   });
-}
 
-// ============================================================
-//  RENDER — main render function
-// ============================================================
-function render() {
-  const app = document.getElementById("app");
-  const pct = (state.step / 5) * 100;
+  // Enter in a text input moves to the next step instead of doing nothing
+  $app.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && e.target.tagName === "INPUT" && e.target.type !== "checkbox" && e.target.type !== "radio" && e.target.type !== "file") {
+      e.preventDefault(); if (S.step < STEPS.length - 1) next();
+    }
+  });
 
-  const stepLabels = ["Client type", "Information", "Documents", "Fee agreement", "Confirm"];
-  const stepsHtml  = stepLabels.map((label, i) => {
-    const n   = i + 1;
-    const cls = n < state.step ? "done" : n === state.step ? "active" : "";
-    const dot = n < state.step ? "&#10003;" : n;
-    return `<div class="step-item">
-      <div class="step-dot ${cls}">${dot}</div>
-      <div class="step-label ${n === state.step ? 'active' : ''}">${label}</div>
-    </div>`;
-  }).join("");
+  window.addEventListener("beforeunload", function (e) {
+    if (S.phase === "sending" || (S.phase === "form" && totalBytes() > 0)) { e.preventDefault(); e.returnValue = ""; }
+  });
 
-  let content = "";
-  if      (state.step === 1) content = renderStep1();
-  else if (state.step === 2) content = renderStep2();
-  else if (state.step === 3) content = renderStep3();
-  else if (state.step === 4) content = renderStep4();
-  else if (state.step === 5) content = renderStep5();
+  // ============================================================
+  //  INIT
+  // ============================================================
+  function readToken() {
+    var t = null;
+    try { t = new URLSearchParams(window.location.search).get("token"); } catch (x) {}
+    if (!t) { var m = window.location.hash.match(/token=([^&]+)/); if (m) { try { t = decodeURIComponent(m[1]); } catch (x) { t = m[1]; } } }
+    return t ? String(t).trim() : "";
+  }
 
-  app.innerHTML = `
-    <div class="header">
-      <div class="firm-name">Albert Hibbert Attorneys Inc.</div>
-      <div class="form-title">FICA client onboarding</div>
-      <div class="form-sub">Please complete all sections and upload the required documents.</div>
-      ${state.ref ? '<div class="form-ref">&#128274; Secure &nbsp;·&nbsp; Reference ' + state.ref + '</div>' : '<div class="form-ref">&#128274; Secure link</div>'}
-    </div>
-    <div class="progress-wrap">
-      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-    </div>
-    <div class="steps">${stepsHtml}</div>
-    ${content}
-  `;
-}
+  function start() {
+    S.restored = loadDraft();
+    S.phase = "form"; render();
+  }
 
-// ============================================================
-//  STEP 1 — Client type
-// ============================================================
-function renderStep1() {
-  const types = [
-    { id:"individual",   label:"Individual",                  sub:"Natural person — SA citizen or foreign national" },
-    { id:"company",      label:"Company / Close corporation", sub:"Registered legal entity — (Pty) Ltd, CC" },
-    { id:"trust",        label:"Trust",                       sub:"Inter vivos or testamentary trust" },
-    { id:"partnership",  label:"Partnership / Joint venture", sub:"Unincorporated partnership or JV" },
-  ];
-  const opts = types.map(t => {
-    const sel = state.clientType === t.id;
-    return `<div class="radio-option ${sel ? 'selected' : ''}" onclick="state.clientType='${t.id}';setType('${t.id}',this)">
-      <div class="radio-circle">${sel ? '<div class="radio-inner"></div>' : ''}</div>
-      <div><div class="radio-text">${t.label}</div><div class="radio-sub">${t.sub}</div></div>
-    </div>`;
-  }).join("");
-
-  return `
-    <div class="notice">&#8505;&nbsp; Select the category that best describes you as the client being onboarded.</div>
-    <div class="card">
-      <div class="card-title">Client category</div>
-      <div class="radio-group">${opts}</div>
-    </div>
-    <div class="nav-row">
-      <span></span>
-      <button class="btn btn-primary" onclick="goTo(2)">Continue &rarr;</button>
-    </div>`;
-}
-
-// ============================================================
-//  STEP 2 — Information
-// ============================================================
-function renderStep2() {
-  const isEntity = state.clientType !== "individual";
-  const f = state.fields;
-
-  let entityFields = "";
-  if (isEntity) {
-    entityFields = `
-      <div class="card">
-        <div class="card-title">Entity details</div>
-        <div class="field">
-          <label class="field-label">Registered entity name <span class="required">*</span></label>
-          <input type="text" placeholder="e.g. Propfol Springs (Pty) Ltd" value="${f.entityName||''}" onchange="saveField('entityName',this.value)" />
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label class="field-label">Registration number <span class="required">*</span></label>
-            <input type="text" placeholder="e.g. 2019/123456/07" value="${f.regNumber||''}" onchange="saveField('regNumber',this.value)" />
-          </div>
-          <div class="field">
-            <label class="field-label">VAT number</label>
-            <input type="text" placeholder="If registered" value="${f.vat||''}" onchange="saveField('vat',this.value)" />
-          </div>
-        </div>
-        <div class="field">
-          <label class="field-label">Registered address <span class="required">*</span></label>
-          <input type="text" placeholder="Street address" value="${f.regAddress||''}" onchange="saveField('regAddress',this.value)" style="margin-bottom:8px;" />
-          <input type="text" placeholder="City, province, postal code" value="${f.regAddress2||''}" onchange="saveField('regAddress2',this.value)" />
-        </div>
-        <div class="divider"></div>
-        <div class="section-sub">Authorised representative</div>
-        <div class="field-row">
-          <div class="field">
-            <label class="field-label">First name <span class="required">*</span></label>
-            <input type="text" placeholder="First name" value="${f.repFirst||''}" onchange="saveField('repFirst',this.value)" />
-          </div>
-          <div class="field">
-            <label class="field-label">Last name <span class="required">*</span></label>
-            <input type="text" placeholder="Last name" value="${f.repLast||''}" onchange="saveField('repLast',this.value)" />
-          </div>
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label class="field-label">SA ID / Passport <span class="required">*</span></label>
-            <input type="text" placeholder="ID or passport number" value="${f.repId||''}" onchange="saveField('repId',this.value)" />
-          </div>
-          <div class="field">
-            <label class="field-label">Capacity <span class="required">*</span></label>
-            <input type="text" placeholder="e.g. Director, Trustee" value="${f.repTitle||''}" onchange="saveField('repTitle',this.value)" />
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-title">Beneficial ownership</div>
-        <div class="notice">&#8505;&nbsp; List all persons who own 25% or more of the entity, directly or indirectly.</div>
-        <div class="field">
-          <label class="field-label">Beneficial owner(s) — name, ID number, % ownership <span class="required">*</span></label>
-          <textarea rows="3" placeholder="Full name — ID number — % ownership&#10;e.g. John Smith — 8501015800082 — 60%"
-            onchange="saveField('bo',this.value)">${f.bo||''}</textarea>
-        </div>
-      </div>`;
+  var tok = readToken();
+  if (!tok) {
+    S.walkIn = true; S.token = "WALK_IN_" + Date.now(); clearDraft(); start();
   } else {
-    entityFields = `
-      <div class="card">
-        <div class="card-title">Personal details</div>
-        <div class="field-row">
-          <div class="field">
-            <label class="field-label">First name <span class="required">*</span></label>
-            <input type="text" placeholder="First name" value="${f.firstName||''}" onchange="saveField('firstName',this.value)" />
-          </div>
-          <div class="field">
-            <label class="field-label">Last name <span class="required">*</span></label>
-            <input type="text" placeholder="Last name" value="${f.lastName||''}" onchange="saveField('lastName',this.value)" />
-          </div>
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label class="field-label">SA ID number <span class="required">*</span></label>
-            <input type="text" placeholder="13-digit ID number" value="${f.idNumber||''}" onchange="saveField('idNumber',this.value)" />
-            <div class="field-hint">Foreign nationals: passport number</div>
-          </div>
-          <div class="field">
-            <label class="field-label">Date of birth <span class="required">*</span></label>
-            <input type="date" value="${f.dob||''}" onchange="saveField('dob',this.value)" />
-          </div>
-        </div>
-        <div class="field">
-          <label class="field-label">Residential address <span class="required">*</span></label>
-          <input type="text" placeholder="Street address" value="${f.address||''}" onchange="saveField('address',this.value)" style="margin-bottom:8px;" />
-          <input type="text" placeholder="City, province, postal code" value="${f.address2||''}" onchange="saveField('address2',this.value)" />
-        </div>
-        <div class="field">
-          <label class="field-label">Occupation <span class="required">*</span></label>
-          <input type="text" placeholder="e.g. Director, Engineer, Self-employed" value="${f.occupation||''}" onchange="saveField('occupation',this.value)" />
-        </div>
-      </div>`;
+    S.walkIn = false; S.token = tok; render();
+    fetch(CONFIG.SCRIPT_URL + "?token=" + encodeURIComponent(tok))
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d && d.valid === false) { S.phase = "invalid"; S.invalidReason = d.reason || "This link has expired or has already been used."; render(); return; }
+        S.tokenVerified = !!(d && d.valid);
+        S.clientName = (d && d.clientName) || "";
+        S.ref = (d && d.ref) || "";
+        var ct = String((d && d.clientType) || "").toLowerCase();
+        if (TYPES[ct]) { S.type = ct; S.prefType = ct; }
+        start();
+      })
+      .catch(function () {
+        // Could not check the link (offline or script error). Let the client continue;
+        // the submission is flagged tokenVerified:false for the firm to check.
+        S.tokenVerified = false; start();
+      });
   }
-
-  return `
-    ${entityFields}
-    <div class="card">
-      <div class="card-title">Contact details</div>
-      <div class="field-row">
-        <div class="field">
-          <label class="field-label">Email address <span class="required">*</span></label>
-          <input type="email" placeholder="email@example.com" value="${f.email||''}" onchange="saveField('email',this.value)" />
-        </div>
-        <div class="field">
-          <label class="field-label">Mobile number <span class="required">*</span></label>
-          <input type="tel" placeholder="+27 82 000 0000" value="${f.phone||''}" onchange="saveField('phone',this.value)" />
-        </div>
-      </div>
-    </div>
-    <div class="nav-row">
-      <button class="btn" onclick="goTo(1)">&larr; Back</button>
-      <button class="btn btn-primary" onclick="goTo(3)">Continue &rarr;</button>
-    </div>`;
-}
-
-// ============================================================
-//  STEP 3 — Documents
-// ============================================================
-function renderStep3() {
-  const isEntity = state.clientType !== "individual";
-  const docs = isEntity ? [
-    { id:"cipc",    label:"CIPC registration certificate",             hint:"COR 14.1 or equivalent registration document",           required:true  },
-    { id:"id_rep",  label:"Certified copy of ID — authorised rep",     hint:"SA ID or valid passport, certified within 3 months",     required:true  },
-    { id:"addr_biz",label:"Proof of business address",                 hint:"Utility bill or bank statement, not older than 3 months", required:true  },
-    { id:"bo_doc",  label:"Beneficial ownership declaration",          hint:"Signed declaration of all beneficial owners at 25%+",     required:true  },
-    { id:"res",     label:"Board resolution / authorisation letter",   hint:"Authorising the representative to act on behalf of the entity", required:false },
-  ] : [
-    { id:"id_copy",    label:"Certified copy of identity document",    hint:"SA ID card/book or valid passport, certified within 3 months", required:true  },
-    { id:"proof_addr", label:"Proof of residential address",           hint:"Utility bill, bank statement or municipality account, not older than 3 months", required:true  },
-    { id:"proof_inc",  label:"Proof of income / source of funds",      hint:"Payslip, bank statement or financial statements (last 3 months)", required:false },
-  ];
-
-  const docItems = docs.map(d => {
-    const uploaded = state.uploads[d.id];
-    const uploadedHtml = uploaded
-      ? `<div class="upload-done">
-           <span>&#10003;&nbsp;</span>
-           <span>${uploaded.name}</span>
-           <button class="upload-remove" onclick="removeUpload('${d.id}')">Remove</button>
-         </div>`
-      : `<div class="upload-zone">
-           <input type="file" accept=".pdf,.jpg,.jpeg,.png"
-             onchange="handleUpload('${d.id}',this)"
-             aria-label="Upload ${d.label}" />
-           <div class="upload-icon">&#8613;</div>
-           <div class="upload-label">Click to upload or drag and drop</div>
-           <div class="upload-sub">PDF, JPG or PNG &nbsp;·&nbsp; Max 10MB</div>
-         </div>`;
-    return `<div class="field">
-      <label class="field-label">
-        ${d.label}
-        ${d.required
-          ? '<span class="required">*</span>'
-          : '<span style="font-size:11px;color:#aaa;font-weight:400;">(optional)</span>'}
-      </label>
-      <div class="field-hint" style="margin-bottom:6px;">${d.hint}</div>
-      ${uploadedHtml}
-    </div>`;
-  }).join("");
-
-  return `
-    <div class="notice">&#8505;&nbsp; Upload clear, legible copies. PDF, JPG or PNG format. Maximum 10MB per file.</div>
-    <div class="card">
-      <div class="card-title">Required documents</div>
-      ${docItems}
-    </div>
-    <div class="nav-row">
-      <button class="btn" onclick="goTo(2)">&larr; Back</button>
-      <button class="btn btn-primary" onclick="goTo(4)">Continue &rarr;</button>
-    </div>`;
-}
-
-// ============================================================
-//  STEP 4 — Fee agreement
-// ============================================================
-function renderStep4() {
-  const signed = state.fields["feeSignature"] && state.fields["feeSignature"].trim().length > 2;
-  return `
-    <div class="notice">&#8505;&nbsp; Please read the fee agreement carefully before signing. Your typed full name below constitutes a valid electronic signature in terms of the Electronic Communications and Transactions Act.</div>
-    <div class="card">
-      <div class="card-title">Fee Agreement — Albert Hibbert Inc Attorneys</div>
-      <div style="background:#F5F4F0;border-radius:8px;padding:1rem;margin-bottom:1rem;max-height:320px;overflow-y:auto;font-size:12px;line-height:1.7;color:#444;">
-        <strong>1. RESPONSIBILITY</strong><br>
-        In this matter, Albert Hibbert will bear overall responsibility. Please contact Albert at any time should you have any queries. His contact number is 012 346 4633.<br><br>
-        <strong>2. FEES AND BILLING</strong><br>
-        Our fees are calculated on an hourly basis. The approximate hourly rates are:<br><br>
-        <table style="width:100%;font-size:11px;border-collapse:collapse;">
-          <tr style="background:#1a1a18;color:#fff;"><td style="padding:5px;font-weight:500;">Professional</td><td style="padding:5px;text-align:center;">Standard Rate</td><td style="padding:5px;text-align:center;">High Rate</td></tr>
-          <tr style="background:#fff;"><td style="padding:5px;border-bottom:0.5px solid #e0dfd8;">Albert Hibbert</td><td style="padding:5px;text-align:center;border-bottom:0.5px solid #e0dfd8;">R4 400.00/hr</td><td style="padding:5px;text-align:center;border-bottom:0.5px solid #e0dfd8;">R5 000.00/hr</td></tr>
-          <tr style="background:#F5F4F0;"><td style="padding:5px;border-bottom:0.5px solid #e0dfd8;">Jaco du Plooy</td><td style="padding:5px;text-align:center;border-bottom:0.5px solid #e0dfd8;">R3 300.00/hr</td><td style="padding:5px;text-align:center;border-bottom:0.5px solid #e0dfd8;">R3 600.00/hr</td></tr>
-          <tr style="background:#fff;"><td style="padding:5px;border-bottom:0.5px solid #e0dfd8;">Mikhael Venter</td><td style="padding:5px;text-align:center;border-bottom:0.5px solid #e0dfd8;">R2 300.00/hr</td><td style="padding:5px;text-align:center;border-bottom:0.5px solid #e0dfd8;">R2 600.00/hr</td></tr>
-          <tr style="background:#F5F4F0;"><td style="padding:5px;border-bottom:0.5px solid #e0dfd8;">2nd Year Candidate</td><td style="padding:5px;text-align:center;border-bottom:0.5px solid #e0dfd8;">R1 600.00/hr</td><td style="padding:5px;text-align:center;border-bottom:0.5px solid #e0dfd8;">R1 800.00/hr</td></tr>
-          <tr style="background:#fff;"><td style="padding:5px;">1st Year Candidate</td><td style="padding:5px;text-align:center;">R1 300.00/hr</td><td style="padding:5px;text-align:center;">R1 500.00/hr</td></tr>
-        </table><br>
-        We charge the high rate for work requiring excessive overtime or urgent work. Disbursements including telephone calls, copying, counsel fees, and out-of-pocket costs are charged separately. VAT at 15% applies to all invoices. Invoices are payable within 7 days of receipt.<br><br>
-        <strong>3. ADJUSTMENT OF RATES</strong><br>
-        Rates are reviewed annually and may be changed without prior notice.<br><br>
-        <strong>4. COMMUNICATION</strong><br>
-        Correspondence will be transmitted by fax or email. We cannot accept responsibility for breaches of confidentiality arising from use of these media.<br><br>
-        <strong>5. GOVERNING LAW</strong><br>
-        Our contractual relationship will be governed by the laws of the Republic of South Africa.<br><br>
-        <strong>6. CONFIDENTIALITY</strong><br>
-        The contents of this agreement are confidential and may not be disclosed to any person other than yourselves.<br><br>
-        <strong>7. TERMINATION OF MANDATE</strong><br>
-        You are entitled to terminate our mandate at any time by written notice. We reserve the right to terminate our mandate should a conflict of interest arise, payment not be made, or should we be unable to obtain proper instructions.<br><br>
-        <strong>8. LIMITATION OF LIABILITY</strong><br>
-        Any liability we may incur shall be limited in aggregate to R 2 000 000.00.<br><br>
-        <strong>9. FICA INFORMATION</strong><br>
-        In terms of the Financial Intelligence Centre Act of 2001, we are obliged to maintain certain general records in respect of our clients.<br><br>
-        <strong>10. ACCEPTANCE</strong><br>
-        By signing below you confirm acceptance of these terms and authorise Albert Hibbert Inc Attorneys to act on your behalf.
-      </div>
-      <div style="display:flex;justify-content:center;margin-bottom:1rem;">
-        <a href="https://mikhael1999-beep.github.io/fica-intake/fee-agreement.pdf" target="_blank"
-          style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;border:0.5px solid #ccc;background:#fff;color:#1a1a18;font-size:12px;font-weight:500;text-decoration:none;">
-          &#128196;&nbsp; Download full fee agreement PDF
-        </a>
-      </div>
-      <div class="field">
-        <label class="field-label">Electronic signature — type your full name to sign <span class="required">*</span></label>
-        <input type="text" id="fee-sig"
-          placeholder="Type your full name exactly as it appears on your ID"
-          value="${state.fields['feeSignature']||''}"
-          oninput="saveField('feeSignature',this.value);document.getElementById('fee-sig-date').textContent=new Date().toLocaleDateString('en-ZA',{day:'numeric',month:'long',year:'numeric'});var btn=document.getElementById('fee-continue-btn');if(btn)btn.disabled=this.value.trim().length<3;"
-          style="font-style:italic;font-size:15px;" />
-        <div class="field-hint">Signed electronically on <span id="fee-sig-date">${new Date().toLocaleDateString('en-ZA',{day:'numeric',month:'long',year:'numeric'})}</span> in terms of the Electronic Communications and Transactions Act 25 of 2002</div>
-      </div>
-    </div>
-    <div class="nav-row">
-      <button class="btn" onclick="goTo(3)">&larr; Back</button>
-      <button class="btn btn-primary" id="fee-continue-btn" onclick="goTo(5)" ${signed?'':'disabled'}>Continue &rarr;</button>
-    </div>`;
-}
-
-// ============================================================
-//  STEP 5 — Review and confirm
-// ============================================================
-function renderStep5() {
-  const f   = state.fields;
-  const isE = state.clientType !== "individual";
-  const name  = isE
-    ? (f.entityName || "—")
-    : ((f.firstName || "") + " " + (f.lastName || "")).trim() || "—";
-  const idVal = isE ? (f.regNumber || "—") : (f.idNumber || "—");
-  const addr  = isE ? (f.regAddress || "—") : (f.address || "—");
-  const docCount = Object.keys(state.uploads).length;
-  const typeLabel = { individual:"Individual", company:"Company / CC", trust:"Trust", partnership:"Partnership / JV" };
-
-  return `
-    <div class="card">
-      <div class="card-title">Review and confirm</div>
-      <div style="font-size:13px;color:#666;margin-bottom:1rem;line-height:1.6;">
-        Please review the details below before submitting. The firm will verify your information and notify you within 2 business days.
-      </div>
-      <div style="background:#F5F4F0;border-radius:8px;padding:1rem;margin-bottom:1rem;">
-        <table class="summary-table">
-          <tr><td class="summary-label">Client type</td><td class="summary-value">${typeLabel[state.clientType]||state.clientType}</td></tr>
-          <tr><td class="summary-label">Name</td><td class="summary-value">${name}</td></tr>
-          <tr><td class="summary-label">ID / Reg number</td><td class="summary-value">${idVal}</td></tr>
-          <tr><td class="summary-label">Address</td><td class="summary-value" style="font-size:12px;">${addr}</td></tr>
-          <tr><td class="summary-label">Email</td><td class="summary-value" style="font-size:12px;">${f.email||'—'}</td></tr>
-          <tr><td class="summary-label">Phone</td><td class="summary-value">${f.phone||'—'}</td></tr>
-          <tr>
-            <td class="summary-label">Documents uploaded</td>
-            <td class="summary-value" style="color:${docCount>0?'#3B6D11':'#A32D2D'}">
-              ${docCount} file${docCount!==1?'s':''}
-            </td>
-          </tr>
-        </table>
-      </div>
-      <div class="field">
-        <label class="field-label">Declaration <span class="required">*</span></label>
-        <div class="decl-box ${state.declared?'checked':''}" id="decl-box" onclick="toggleDecl()">
-          <div class="checkbox"><span class="checkmark">${state.declared?'&#10003;':''}</span></div>
-          <div style="font-size:12px;color:#555;line-height:1.6;">
-            I confirm that the information provided is true and correct to the best of my knowledge,
-            and that all documents uploaded are authentic. I consent to Albert Hibbert Attorneys Inc.
-            retaining this information for FICA compliance and the provision of legal services.
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="nav-row">
-      <button class="btn" onclick="goTo(4)">&larr; Back</button>
-      <button class="btn btn-primary" id="submit-btn"
-        onclick="submitForm()" ${state.declared?'':'disabled'}>
-        &#10003;&nbsp; Submit FICA application
-      </button>
-    </div>`;
-}
-
-// ============================================================
-//  SUCCESS SCREEN
-// ============================================================
-function renderSuccess() {
-  const today = new Date().toLocaleDateString("en-ZA", {
-    day:"numeric", month:"long", year:"numeric"
-  });
-  document.getElementById("app").innerHTML = `
-    <div class="header">
-      <div class="firm-name">Albert Hibbert Attorneys Inc.</div>
-      <div class="form-title">FICA client onboarding</div>
-    </div>
-    <div class="card">
-      <div class="success">
-        <div class="success-icon">&#10003;</div>
-        <div class="success-title">Application submitted</div>
-        <div class="success-sub">
-          Thank you. Your FICA application has been received by Albert Hibbert Attorneys Inc.
-          You will be notified via email once your documents have been verified,
-          within 2 business days.
-        </div>
-        <div class="ref-box">
-          <div class="ref-box-title">Reference details</div>
-          ${state.ref ? '<div class="ref-row"><span class="ref-key">Matter ref</span><span class="ref-val">'+state.ref+'</span></div>' : ''}
-          <div class="ref-row"><span class="ref-key">Submitted</span><span class="ref-val">${today}</span></div>
-          <div class="ref-row"><span class="ref-key">Status</span><span class="ref-val" style="color:#854F0B;">Pending review</span></div>
-        </div>
-      </div>
-    </div>`;
-}
-
-// ============================================================
-//  INVALID / EXPIRED SCREEN
-// ============================================================
-function renderInvalid(reason) {
-  document.getElementById("app").innerHTML = `
-    <div class="header">
-      <div class="firm-name">Albert Hibbert Attorneys Inc.</div>
-      <div class="form-title">FICA client onboarding</div>
-    </div>
-    <div class="card">
-      <div class="invalid">
-        <div class="invalid-icon">&#9888;</div>
-        <div class="invalid-title">Link unavailable</div>
-        <div class="invalid-sub">
-          ${reason}<br><br>
-          Please contact Albert Hibbert Attorneys Inc. to request a new link.
-        </div>
-      </div>
-    </div>`;
-}
+})();
 </script>
 </body>
 </html>
